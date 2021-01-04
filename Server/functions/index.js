@@ -8,14 +8,20 @@
 
 const functions = require('firebase-functions');
 const firebase = require('firebase-admin');
-let express  = require('express');
-let app = express();
+const express  = require('express');
+const engines = require('consolidate');
 //let login = require('../Database/login')
+
+let app = express();
+app.engine('hbs', engines.handlebars);
+app.set('views', './views');
+app.set('view engine', 'hbs');
 
 const firebaseApp = firebase.initializeApp(functions.config().firebase);
 
 app.get('/', function(req, res) {
-	res.send('<h1>Connected successfully</h1>')
+    res.set('Cache-control', 'public, max-age=300, s-maxage=600');
+	res.render('index', {date: Date.now()})
 })
 
 app.post('/register', function(req, res){
