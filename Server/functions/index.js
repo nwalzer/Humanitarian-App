@@ -10,14 +10,17 @@ const functions = require('firebase-functions');
 const firebase = require('firebase-admin');
 const express  = require('express');
 const engines = require('consolidate');
-//let login = require('../Database/login')
+const bodyParser = require('body-parser');
+const login = require('./login');
 
 let app = express();
+app.use(bodyParser.json());
 app.engine('hbs', engines.handlebars);
 app.set('views', './views');
 app.set('view engine', 'hbs');
 
 const firebaseApp = firebase.initializeApp(functions.config().firebase);
+const db = firebase.database();
 
 app.get('/', function(req, res) {
     res.set('Cache-control', 'public, max-age=300, s-maxage=600');
@@ -25,13 +28,37 @@ app.get('/', function(req, res) {
 })
 
 app.post('/register', function(req, res){
-	//TODO: implement
-	res.send('Success')
+	login.userExists(db, req.body.username).then(function(exists){
+		console.log("EXISTS: " + exists);
+		if(exists === true){
+			res.send('User Exists');
+		} else {
+			login.hashPassword(req.body.pass).then(function(hash){
+				login.addNewUser(db, req.body.username, req.body.phone, req.body.email, hash).then(function(val){
+					if(val === true){
+						res.send('Success');
+					} else {
+						res.send('Failed');
+					}
+					return;
+				}).catch(error => sendFailure(res, error));
+				return;
+			}).catch(error => sendFailure(res, error));
+		}
+		return;
+	}).catch(error => sendFailure(res, error));
 })
 
 app.post('/login', function(req, res){
-	//TODO: implement
-	res.send('Success')
+	login.compareHash(db, req.body.username, req.body.pass).then(function(val){
+		console.log(val);
+		if(val){
+			res.send("SUCCESS");
+		} else {
+			res.send("FAILED");
+		}
+		return;
+	}).catch(error => sendFailure(res, error));
 })
 
 app.post('/review', function(req, res){
@@ -39,8 +66,12 @@ app.post('/review', function(req, res){
 	res.send('Success')
 })
 app.get('/ping', function(req, res) {
-    //login.hashPassword("HELLO").then(val => console.log(val)).catch(error => console.log(error));
-	res.send("Ping successful!")
+	res.send("Ping successful!");
 })
+
+function sendFailure(res, error){
+	console.log(error);
+	res.send('Failed');
+}
 
 exports.app = functions.https.onRequest(app);
