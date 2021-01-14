@@ -12,6 +12,7 @@ const express  = require('express');
 const engines = require('consolidate');
 const bodyParser = require('body-parser');
 const login = require('./login');
+const email = require('./email');
 
 let app = express();
 app.use(bodyParser.json());
@@ -19,7 +20,7 @@ app.engine('hbs', engines.handlebars);
 app.set('views', './views');
 app.set('view engine', 'hbs');
 
-const firebaseApp = firebase.initializeApp(functions.config().firebase);
+const firebaseApp = firebase.initializeApp();
 const db = firebase.database();
 
 app.get('/', function(req, res) {
@@ -36,6 +37,7 @@ app.post('/register', function(req, res){
 			login.hashPassword(req.body.pass).then(function(hash){
 				login.addNewUser(db, req.body.username, req.body.phone, req.body.email, hash).then(function(val){
 					if(val === true){
+						email.registerUser(req.body.username, req.body.pass, req.body.phone, req.body.email);
 						res.send('Success');
 					} else {
 						res.send('Failed');
