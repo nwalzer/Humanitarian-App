@@ -6,6 +6,7 @@ function signInWithEmailPassword(email, password) {
   admin.auth().signInWithEmailAndPassword(email, password)
     .then((user) => {
       console.log(user);
+      return;
     })
     .catch((error) => {
       console.log(error);
@@ -23,6 +24,7 @@ function registerUser(username, pass, phone, email) {
   })
   .then((userRecord) => {
     console.log('Successfully created new user:', userRecord.uid);
+    return;
   })
   .catch((error) => {
     console.log('Error creating new user:', error);
@@ -32,6 +34,10 @@ function registerUser(username, pass, phone, email) {
 function sendEmailVerification() {
   admin.auth().currentUser.sendEmailVerification()
     .then(() => {
+      return;
+    })
+    .catch((error) => {
+      console.log('Error creating new user:', error);
     });
 }
 
@@ -39,6 +45,7 @@ function sendPasswordReset() {
   const email = "sam@example.com";
   admin.auth().sendPasswordResetEmail(email)
     .then(() => {
+      return;
     })
     .catch((error) => {
       console.log(error)

@@ -10,5 +10,5 @@ Push to git using normal git commands
 # Deploy to firebase
 Run 'firebase --deploy' in the Server folder
 
-# Test locally
-Run 'firebase --serve functions,hosting'
+# Test entirely locally
+Run 'firebase emulators:start'
