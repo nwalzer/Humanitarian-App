@@ -41,8 +41,7 @@ function sendEmailVerification() {
     });
 }
 
-function sendPasswordReset() {
-  const email = "sam@example.com";
+function sendPasswordReset(email) {
   admin.auth().sendPasswordResetEmail(email)
     .then(() => {
       return;
