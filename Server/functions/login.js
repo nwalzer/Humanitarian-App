@@ -1,11 +1,14 @@
 const bcrypt = require("bcrypt");
 
 function addNewUser(db, uname, phone, email, pass) {
-    return db.ref('users/' + uname).set({
+  const userRef = db.collection('users');
+    return userRef.add({
       email: email,
       phone: phone,
-      phash: pass
+      phash: pass,
+      uname: uname
     }).then(function(val){
+      console.log(val);
       return true;
     }).catch(function(error){
       console.log(error);
@@ -14,14 +17,14 @@ function addNewUser(db, uname, phone, email, pass) {
   }
 
 function userExists(db, uname){
-  const ref = db.ref('users/' + uname);
-  console.log("REF: " + ref);
-  return ref.once("value").then(function(snapshot){
-    console.log("CHECKING: " + snapshot.exists());
-    return snapshot.exists();
-  }).catch(function(error){
-    console.log(error);
-    return false;
+  const ref = db.collection('users');
+  
+  return ref.where('uname', '==', uname).get().then(snapshot => {
+    if (snapshot.empty) {
+      return false;
+    }  else {
+      return true;
+    }
   });
 }
 
@@ -50,15 +53,18 @@ function compareHash(db, user, pword){
 }
 
 function getHash(db, user){
-  const ref = db.ref('users/' + user);
-
-  return ref.once("value").then(function(snapshot){
-    let phash = snapshot.val().phash;
-    return phash;    
-  }).catch(function(error){
-    console.log("Failed to read: " + error);
-    return "FAILED";
-  })
+  const ref = db.collection('users');
+  return ref.where('uname', '==', user).get().then(snapshot => {
+    if (snapshot.empty) {
+      return "FAILED";
+    }  else {
+      let hash = "";
+      snapshot.forEach(doc => {
+        hash = doc.data().phash;
+      });
+      return hash;
+    }
+  });
 }
 
 module.exports = {addNewUser, hashPassword, userExists, compareHash};

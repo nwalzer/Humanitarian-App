@@ -20,8 +20,11 @@ app.engine('hbs', engines.handlebars);
 app.set('views', './views');
 app.set('view engine', 'hbs');
 
-const firebaseApp = firebase.initializeApp();
-const db = firebase.database();
+firebase.initializeApp({
+	serviceAccountId: 'firebase-adminsdk-9casr@humanitarian-app-development.iam.gserviceaccount.com'
+  });
+
+const db = firebase.firestore();
 
 app.get('/', function(req, res) {
     res.set('Cache-control', 'public, max-age=300, s-maxage=600');
@@ -29,7 +32,7 @@ app.get('/', function(req, res) {
 })
 
 app.post('/register', function(req, res){
-	login.userExists(db, req.body.username).then(function(exists){
+	login.userExists(db, req.body.username).then(exists => {
 		console.log("EXISTS: " + exists);
 		if(exists === true){
 			res.send('User Exists');
@@ -37,7 +40,7 @@ app.post('/register', function(req, res){
 			login.hashPassword(req.body.pass).then(function(hash){
 				login.addNewUser(db, req.body.username, req.body.phone, req.body.email, hash).then(function(val){
 					if(val === true){
-						email.registerUser(req.body.username, req.body.pass, req.body.phone, req.body.email);
+						//email.registerUser(req.body.username, req.body.pass, req.body.phone, req.body.email);
 						res.send('Success');
 					} else {
 						res.send('Failed');
@@ -51,11 +54,15 @@ app.post('/register', function(req, res){
 	}).catch(error => sendFailure(res, error));
 })
 
+//Determines if a user has entered a valid username-password combo
 app.post('/login', function(req, res){
 	login.compareHash(db, req.body.username, req.body.pass).then(function(val){
 		console.log(val);
 		if(val){
-			res.send("SUCCESS");
+			email.createCustomToken(req.body.username, db).then(token => {
+				console.log("RECEIVED TOKEN: ", token);
+				res.send({"TOK": token});
+			});
 		} else {
 			res.send("FAILED");
 		}
@@ -66,9 +73,6 @@ app.post('/login', function(req, res){
 app.post('/review', function(req, res){
 	//TODO: implement
 	res.send('Success')
-})
-app.get('/ping', function(req, res) {
-	res.send("Ping successful!");
 })
 
 function sendFailure(res, error){
