@@ -20,9 +20,11 @@ app.engine('hbs', engines.handlebars);
 app.set('views', './views');
 app.set('view engine', 'hbs');
 
+const serviceAccount = require('./humanitarian-app-development-firebase-adminsdk-9casr-0ec4d4cdb4.json');
+
 firebase.initializeApp({
-	serviceAccountId: 'firebase-adminsdk-9casr@humanitarian-app-development.iam.gserviceaccount.com'
-  });
+  credential: firebase.credential.cert(serviceAccount)
+});
 
 const db = firebase.firestore();
 
@@ -62,7 +64,8 @@ app.post('/login', function(req, res){
 			email.createCustomToken(req.body.username, db).then(token => {
 				console.log("RECEIVED TOKEN: ", token);
 				res.send({"TOK": token});
-			});
+				return;
+			}).catch(error => sendFailure(res, error));
 		} else {
 			res.send("FAILED");
 		}
