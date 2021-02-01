@@ -59,15 +59,15 @@ app.post('/register', function(req, res){
 //Determines if a user has entered a valid username-password combo
 app.post('/login', function(req, res){
 	login.compareHash(db, req.body.username, req.body.pass).then(function(val){
-		console.log(val);
 		if(val){
 			email.createCustomToken(req.body.username, db).then(token => {
 				console.log("RECEIVED TOKEN: ", token);
-				res.send({"TOK": token});
+				res.send({"TOK": token, "status":"SUCCESS"});
 				return;
 			}).catch(error => sendFailure(res, error));
 		} else {
-			res.send("FAILED");
+			res.setHeader('Content-Type', 'application/json');
+			res.send({"status":"FAILED"});
 		}
 		return;
 	}).catch(error => sendFailure(res, error));

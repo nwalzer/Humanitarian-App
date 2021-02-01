@@ -8,6 +8,28 @@
     <body>
         <p>This is a test home page</p>
         <p id="TIMESTAMP">{{date}}</p>
+        <div class="container">
+            <label for="uname"><b>Username</b></label>
+            <input type="text" id="uname" placeholder="Enter Username" name="uname">
+
+            <label for="psw"><b>Password</b></label>
+            <input type="password" id="pass" placeholder="Enter Password" name="psw">
+
+            <button type="submit" id="login">Login</button>
+            <label>
+                <input type="checkbox" checked="checked" name="remember"> Remember me
+            </label>
+        </div>
+        <script src="../client-login.js"></script>
+        <script>
+            document.getElementById("login").onclick = function(){
+                signInWithEmailPassword(document.getElementById("uname").value, document.getElementById("pass").value);
+            }
+        </script>
+
+
+
+        
         <script src="/__/firebase/8.2.2/firebase-app.js"></script>
         <script src="/__/firebase/8.2.2/firebase-auth.js"></script>
         <script src="/__/firebase/8.2.2/firebase-firestore.js"></script>

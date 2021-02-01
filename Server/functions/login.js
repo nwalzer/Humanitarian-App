@@ -8,7 +8,7 @@ function addNewUser(db, uname, phone, email, pass) {
       phash: pass,
       uname: uname
     }).then(function(val){
-      console.log(val);
+      console.log("ADDED: ", val.id);
       return true;
     }).catch(function(error){
       console.log(error);
@@ -56,12 +56,14 @@ function getHash(db, user){
   const ref = db.collection('users');
   return ref.where('uname', '==', user).get().then(snapshot => {
     if (snapshot.empty) {
+      console.log("USER DOES NOT EXIST");
       return "FAILED";
     }  else {
       let hash = "";
       snapshot.forEach(doc => {
         hash = doc.data().phash;
       });
+      console.log("RETRIEVED HASH");
       return hash;
     }
   });
