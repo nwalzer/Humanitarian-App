@@ -34,18 +34,18 @@ app.get('/', function(req, res) {
 })
 
 app.post('/register', function(req, res){
+	res.setHeader('Content-Type', 'application/json');
 	login.userExists(db, req.body.username).then(exists => {
 		console.log("EXISTS: " + exists);
 		if(exists === true){
-			res.send('User Exists');
+			res.send({"status":"FAILED"});
 		} else {
 			login.hashPassword(req.body.pass).then(function(hash){
 				login.addNewUser(db, req.body.username, req.body.phone, req.body.email, hash).then(function(val){
 					if(val === true){
-						//email.registerUser(req.body.username, req.body.pass, req.body.phone, req.body.email);
-						res.send('Success');
+						res.send({"status":"SUCCESS"});
 					} else {
-						res.send('Failed');
+						res.send({"status":"FAILED"});
 					}
 					return;
 				}).catch(error => sendFailure(res, error));
@@ -58,15 +58,15 @@ app.post('/register', function(req, res){
 
 //Determines if a user has entered a valid username-password combo
 app.post('/login', function(req, res){
+	res.setHeader('Content-Type', 'application/json');
 	login.compareHash(db, req.body.username, req.body.pass).then(function(val){
 		if(val){
-			email.createCustomToken(req.body.username, db).then(token => {
+			login.createCustomToken(req.body.username, db).then(token => {
 				console.log("RECEIVED TOKEN: ", token);
 				res.send({"TOK": token, "status":"SUCCESS"});
 				return;
 			}).catch(error => sendFailure(res, error));
 		} else {
-			res.setHeader('Content-Type', 'application/json');
 			res.send({"status":"FAILED"});
 		}
 		return;

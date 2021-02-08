@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+    <title>Login Page</title>
 
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/8.2.3/firebase-app.js"></script>
@@ -36,6 +36,7 @@
             'functions'
           ].filter(feature => typeof app[feature] === 'function');
           console.log(`Firebase SDK loaded with ${features.join(', ')}`);
+          firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
         } catch (e) {
           console.error(e);
           console.log('Error loading the Firebase SDK, check the console.');
@@ -44,14 +45,27 @@
 
       document.getElementById("login").onclick = function() {
         var data = {"username": document.getElementById('uname').value, "pass": document.getElementById('pass').value};
-        
+        var baseURL = "https://humanitarian-app-development.web.app";
+        //var baseURL = "http://localhost:5000"
         $.ajax({
-            url: "https://humanitarian-app-development.web.app/login",
+            url: baseURL + "/login",
             type: "POST",
             data: data,
             dataType: "json",
             success: function( response ) {
                 console.log( response ); // server response
+                if(response["status"] == "SUCCESS"){
+                  firebase.auth().signInWithCustomToken(response["TOK"])
+                    .then((userCredential) => {
+                      console.log(userCredential);
+                      window.location.href = baseURL + "/home.html";
+                    })
+                    .catch((error) => {
+                      var errorCode = error.code;
+                      var errorMessage = error.message;
+                      console.log(error);
+                    });
+                }
             }
 
         });
