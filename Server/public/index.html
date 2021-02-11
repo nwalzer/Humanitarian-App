@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Welcome to Firebase Hosting</title>
@@ -18,8 +19,24 @@
     -->
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
 
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+
   </head>
   <body>
+    <p>Here is my firebase stuff!</p>
+    
+    <div id='map' style='width: 400px; height: 300px;'></div>
+    <script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2FrYmFyIiwiYSI6ImNra3RpNHRzdTBoNzUzMW15emlmaGNxYTgifQ.uXLwvykOd7ymJEmXDGTCqg';
+    var map = new mapboxgl.Map({
+        container: 'map', // container ID
+        style: 'mapbox://styles/mapbox/streets-v11', // style URL
+        center: [-74.5, 40], // starting position [lng, lat]
+        zoom: 9 // starting zoom
+    });
+    </script>
+
 
     <script>
       document.addEventListener('DOMContentLoaded', function() {
