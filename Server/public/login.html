@@ -45,8 +45,8 @@
 
       document.getElementById("login").onclick = function() {
         var data = {"username": document.getElementById('uname').value, "pass": document.getElementById('pass').value};
-        var baseURL = "https://humanitarian-app-development.web.app";
-        //var baseURL = "http://localhost:5000"
+        //var baseURL = "https://humanitarian-app-development.web.app";
+        var baseURL = "http://localhost:5000"
         $.ajax({
             url: baseURL + "/login",
             type: "POST",

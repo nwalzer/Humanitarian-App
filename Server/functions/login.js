@@ -29,7 +29,7 @@ function userExists(db, uname){
   });
 }
 
-const hashPassword = async (password, saltRounds = 10) => {
+const hashPassword = async (password, saltRounds = 12) => {
     try {
         const salt = await bcrypt.genSalt(saltRounds);
         return await bcrypt.hash(password, salt);
