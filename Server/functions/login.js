@@ -31,10 +31,11 @@ function userExists(db, uname){
 
 const hashPassword = async (password, saltRounds = 12) => {
     try {
-        const salt = await bcrypt.genSalt(saltRounds);
-        return await bcrypt.hash(password, salt);
+      return bcrypt.genSalt(saltRounds).then(function(salt){
+        return bcrypt.hash(password, salt);
+      });
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
     // Return null if error
     return null;
@@ -45,7 +46,7 @@ function compareHash(db, user, pword){
 		if(hash === "FAILED"){
 			return false;
 		} else {
-			return bcrypt.compareSync(String(pword), String(hash));
+			return bcrypt.compare(String(pword), String(hash));
 		}
   }).catch(function(error){
     console.log(error);
