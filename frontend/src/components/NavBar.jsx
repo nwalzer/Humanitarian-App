@@ -18,6 +18,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import SearchBar from './SearchBar';
 import Container from '@material-ui/core/Container';
 import Landing from './Landing';
+import Button from '@material-ui/core/Button';
+import Login from './Login';
+import PropTypes from 'prop-types';
+
 const drawerWidth = 300;
 const WhiteTextTypography = withStyles({
   root: {
@@ -86,7 +90,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+SimpleDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  selectedValue: PropTypes.string.isRequired,
+};
+
 export default function PersistentDrawerLeft() {
+  const [open, setOpen] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value) => {
+    setOpen(false);
+    setSelectedValue(value);
+  };
+
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -140,16 +162,10 @@ export default function PersistentDrawerLeft() {
         <WhiteTextTypography noWrap> Welcome to the application! </WhiteTextTypography>
         <br />
         <Divider />
-        <List>
-          {['Sign In', 'Create Account'].map((text, index) => (
-            <ListItem button key={text}>
-              {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
-              <WhiteTextTypography>
-                <ListItemText primary={text} />
-              </WhiteTextTypography>
-            </ListItem>
-          ))}
-        </List>
+        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+          Login
+        </Button>
+        <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
         <Divider />
       </Drawer>
       <main

@@ -1,6 +1,7 @@
 import './App.css';
 import PersistentDrawerLeft from './components/NavBar'
 import React from 'react';
+
 function App() {
   return (
     <div className="App">
