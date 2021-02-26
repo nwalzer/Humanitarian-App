@@ -53,7 +53,7 @@ function SimpleDialog(props) {
 
     const handleLogin = () => {
         var data = {username: username, pass: password};
-        firebase.functions().useEmulator("localhost", 5001);
+        //firebase.functions().useEmulator("localhost", 5001);
         var login = firebase.functions().httpsCallable('login');
         login(data).then(res=>{
             console.log(res);

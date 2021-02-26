@@ -55,7 +55,7 @@ function SimpleDialog(props) {
 
     const handleRegister = () => {
         var data = { username: username, pass: password, phone: phonenum};
-        firebase.functions().useEmulator("localhost", 5001);
+        //firebase.functions().useEmulator("localhost", 5001);
         var register = firebase.functions().httpsCallable('register');
         register(data).then(res => console.log(res));
     }
