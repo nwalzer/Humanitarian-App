@@ -82,12 +82,9 @@ function createCustomToken(uname, db){
       snapshot.forEach(doc => {
         uid = doc.id;
       });
-      let additionalClaims = {
-        username: uname
-      }
       return admin
             .auth()
-            .createCustomToken(uid, additionalClaims)
+            .createCustomToken(uid)
             .then((customToken) => {
               return customToken
             })

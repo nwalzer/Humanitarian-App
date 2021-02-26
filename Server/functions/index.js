@@ -28,10 +28,10 @@ exports.register = functions.https.onCall((data, context) => {
 	return login.userExists(db, data.username).then(exists => {
 		console.log("EXISTS: " + exists);
 		if(exists === true){
-			res.send({"status":"FAILED"});
+			return {"status": "FAILED"};
 		} else {
-			login.hashPassword(data.pass).then(function(hash){
-				login.addNewUser(db, data.username, data.phone, data.email, hash).then(function(val){
+			return login.hashPassword(data.pass).then(function(hash){
+				return login.addNewUser(db, data.username, data.phone, "data.email", hash).then(function(val){
 					if(val === true){
 						return {"status":"SUCCESS"};
 					} else {
@@ -46,7 +46,7 @@ exports.register = functions.https.onCall((data, context) => {
 exports.login = functions.https.onCall((data, context) => {
 	return login.compareHash(db, data.username, data.pass).then(function(val){
 		if(val){
-			login.createCustomToken(data.username, db).then(token => {
+			return login.createCustomToken(data.username, db).then(token => {
 				console.log("RECEIVED TOKEN: ", token);
 				return {"TOK": token, "status":"SUCCESS"};
 			}).catch(error => sendFailure(res, error));
