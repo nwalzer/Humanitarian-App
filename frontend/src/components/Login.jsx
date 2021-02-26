@@ -16,6 +16,7 @@ import { blue } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app';
 import 'firebase/functions';
+import 'firebase/auth';
 
 const useStyles = makeStyles((theme) => ({
     avatar: {
@@ -54,7 +55,19 @@ function SimpleDialog(props) {
         var data = {username: username, pass: password};
         firebase.functions().useEmulator("localhost", 5001);
         var login = firebase.functions().httpsCallable('login');
-        login(data).then(res=>console.log(res));
+        login(data).then(res=>{
+            console.log(res);
+            if(res.data.status == "FAILED" || res.data.status == "ERROR"){
+                //do something
+            } else {
+                console.log(res.data.TOK);
+                firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                firebase.auth().signInWithCustomToken(res.data.TOK).then(userCred => {
+                    console.log(userCred);
+                    //transition to new screen
+                })
+            }
+        });
     }
 
     return (
