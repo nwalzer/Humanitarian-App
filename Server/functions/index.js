@@ -12,7 +12,7 @@ const express  = require('express');
 const engines = require('consolidate');
 const bodyParser = require('body-parser');
 const login = require('./login');
-const email = require('./email');
+const sanitize = require('./sanitize');
 
 let app = express();
 app.use(bodyParser.json());
