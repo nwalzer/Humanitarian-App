@@ -21,7 +21,7 @@ import Landing from './Landing';
 import Button from '@material-ui/core/Button';
 import Login from './Login';
 import RegisterAcc from './RegisterAcc';
-
+import Heatmap from './Heatmap';
 const drawerWidth = 300;
 const WhiteTextTypography = withStyles({
   root: {

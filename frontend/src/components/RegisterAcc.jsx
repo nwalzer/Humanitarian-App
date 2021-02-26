@@ -16,6 +16,8 @@ import { blue } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app';
 import 'firebase/functions';
+import Input from '@material-ui/core/Input'
+import PhoneInput from 'react-phone-number-input/input'
 
 const useStyles = makeStyles((theme) => ({
     avatar: {
@@ -35,6 +37,7 @@ function SimpleDialog(props) {
     const { onClose, selectedValue, open } = props;
     const [username, setUsername] = useState(" ");
     const [password, setPassword] = useState(" ");
+    const [phonenum, setPhoneNumber] = useState(" ");
     const handleUsername = (event) => {
         setUsername(event.target.value);
     }
@@ -51,10 +54,10 @@ function SimpleDialog(props) {
     //   };
 
     const handleRegister = () => {
-        var data = {username: username, pass: password};
+        var data = { username: username, pass: password, phone: phonenum};
         firebase.functions().useEmulator("localhost", 5001);
-        var login = firebase.functions().httpsCallable('login');
-        login(data).then(res=>console.log(res));
+        var register = firebase.functions().httpsCallable('register');
+        register(data).then(res => console.log(res));
     }
 
     return (
@@ -78,6 +81,13 @@ function SimpleDialog(props) {
                         type="password"
                         autoComplete="current-password"
                     />
+                </ListItem>
+                <ListItem>
+                    <PhoneInput
+                        country="US"
+                        placeholder="Phone Number"
+                        value={phonenum}
+                        onChange={setPhoneNumber} />
                 </ListItem>
             </List>
             <Button onClick={handleRegister}> Register Account </Button>
