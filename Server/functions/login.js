@@ -1,10 +1,9 @@
 const bcrypt = require("bcrypt");
 const admin = require('firebase-admin');
 
-function addNewUser(db, uname, phone, email, pass) {
+function addNewUser(db, uname, phone, pass) {
   const userRef = db.collection('users');
   return userRef.add({
-    email: email,
     phone: phone,
     phash: pass,
     uname: uname

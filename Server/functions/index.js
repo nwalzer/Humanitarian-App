@@ -31,7 +31,7 @@ exports.register = functions.https.onCall((data, context) => {
 			return { "status": "FAILED" };
 		} else {
 			return login.hashPassword(data.pass).then(function (hash) {
-				return login.addNewUser(db, data.username, data.phone, "data.email", hash).then(function (val) {
+				return login.addNewUser(db, data.username, data.phone, hash).then(function (val) {
 					if (val === true) {
 						return { "status": "SUCCESS" };
 					} else {
