@@ -12,30 +12,30 @@ const bodyParser = require('body-parser');
 const login = require('./login');
 const sanitize = require('./sanitize');
 
-const serviceAccount = require('./humanitarian-app-development-firebase-adminsdk-9casr-0ec4d4cdb4.json');
+const serviceAccount = require('./humanitarian-app-development-e24999441e22.json');
 
 firebase.initializeApp({
-  credential: firebase.credential.cert(serviceAccount)
+	credential: firebase.credential.cert(serviceAccount)
 });
 
 const db = firebase.firestore();
 
-function sendFailure(error){
-	return {"status": "ERROR", "message":error};
+function sendFailure(error) {
+	return { "status": "ERROR", "message": error };
 }
 
 exports.register = functions.https.onCall((data, context) => {
 	return login.userExists(db, data.username).then(exists => {
 		console.log("EXISTS: " + exists);
-		if(exists === true){
-			return {"status": "FAILED"};
+		if (exists === true) {
+			return { "status": "FAILED" };
 		} else {
-			return login.hashPassword(data.pass).then(function(hash){
-				return login.addNewUser(db, data.username, data.phone, "data.email", hash).then(function(val){
-					if(val === true){
-						return {"status":"SUCCESS"};
+			return login.hashPassword(data.pass).then(function (hash) {
+				return login.addNewUser(db, data.username, data.phone, "data.email", hash).then(function (val) {
+					if (val === true) {
+						return { "status": "SUCCESS" };
 					} else {
-						return {"status":"FAILED"};
+						return { "status": "FAILED" };
 					}
 				}).catch(error => sendFailure(error));
 			}).catch(error => sendFailure(error));
@@ -44,19 +44,19 @@ exports.register = functions.https.onCall((data, context) => {
 })
 
 exports.login = functions.https.onCall((data, context) => {
-	return login.compareHash(db, data.username, data.pass).then(function(val){
-		if(val){
+	return login.compareHash(db, data.username, data.pass).then(function (val) {
+		if (val) {
 			return login.createCustomToken(data.username, db).then(token => {
 				console.log("RECEIVED TOKEN: ", token);
-				return {"TOK": token, "status":"SUCCESS"};
-			}).catch(error => sendFailure(res, error));
+				return { "TOK": token, "status": "SUCCESS" };
+			}).catch(error => sendFailure(error));
 		} else {
 			console.log("failing");
-			return {"status":"FAILED"};
+			return { "status": "FAILED" };
 		}
 	}).catch(error => sendFailure(error));
 })
 
 exports.review = functions.https.onCall((data, context) => {
-	return {"TODO":"do this function"}
+	return { "TODO": "do this function" }
 })
