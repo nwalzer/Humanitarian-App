@@ -14,8 +14,8 @@ import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import { blue } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
-
-// const emails = ['username@gmail.com', 'user02@gmail.com']; 
+import firebase from 'firebase/app';
+import 'firebase/functions';
 
 const useStyles = makeStyles((theme) => ({
     avatar: {
@@ -52,16 +52,9 @@ function SimpleDialog(props) {
 
     const handleLogin = () => {
         var data = {username: username, pass: password};
-        console.log(data);
-        // console.log(username);
-        // var baseURL = "https://humanitarian-app-development.web.app";
-        //var baseURL = "http://localhost:5000" 
-        const options = {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {"Content-Type": "application/json"}
-        }
-        fetch(baseURL + "/userlogin", options).then(res=>console.log(res));
+        firebase.functions().useEmulator("localhost", 5001);
+        var login = firebase.functions().httpsCallable('login');
+        login(data).then(res=>console.log(res));
     }
 
     return (

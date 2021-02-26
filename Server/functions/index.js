@@ -8,17 +8,9 @@
 
 const functions = require('firebase-functions');
 const firebase = require('firebase-admin');
-const express  = require('express');
-const engines = require('consolidate');
 const bodyParser = require('body-parser');
 const login = require('./login');
 const sanitize = require('./sanitize');
-
-let app = express();
-app.use(bodyParser.json());
-app.engine('hbs', engines.handlebars);
-app.set('views', './views');
-app.set('view engine', 'hbs');
 
 const serviceAccount = require('./humanitarian-app-development-firebase-adminsdk-9casr-0ec4d4cdb4.json');
 
@@ -28,59 +20,43 @@ firebase.initializeApp({
 
 const db = firebase.firestore();
 
-app.get('/', function(req, res) {
-    res.set('Cache-control', 'public, max-age=300, s-maxage=600');
-	res.render('index', {date: Date.now()})
-})
+function sendFailure(error){
+	return {"status": "ERROR", "message":error};
+}
 
-app.post('/register', function(req, res){
-	res.setHeader('Content-Type', 'application/json');
-	login.userExists(db, req.body.username).then(exists => {
+exports.register = functions.https.onCall((data, context) => {
+	return login.userExists(db, data.username).then(exists => {
 		console.log("EXISTS: " + exists);
 		if(exists === true){
 			res.send({"status":"FAILED"});
 		} else {
-			login.hashPassword(req.body.pass).then(function(hash){
-				login.addNewUser(db, req.body.username, req.body.phone, req.body.email, hash).then(function(val){
+			login.hashPassword(data.pass).then(function(hash){
+				login.addNewUser(db, data.username, data.phone, data.email, hash).then(function(val){
 					if(val === true){
-						res.send({"status":"SUCCESS"});
+						return {"status":"SUCCESS"};
 					} else {
-						res.send({"status":"FAILED"});
+						return {"status":"FAILED"};
 					}
-					return;
-				}).catch(error => sendFailure(res, error));
-				return;
-			}).catch(error => sendFailure(res, error));
+				}).catch(error => sendFailure(error));
+			}).catch(error => sendFailure(error));
 		}
-		return;
-	}).catch(error => sendFailure(res, error));
+	}).catch(error => sendFailure(error));
 })
 
-//Determines if a user has entered a valid username-password combo
-app.post('/userlogin', function(req, res){
-	res.setHeader('Content-Type', 'application/json');
-	login.compareHash(db, req.body.username, req.body.pass).then(function(val){
+exports.login = functions.https.onCall((data, context) => {
+	return login.compareHash(db, data.username, data.pass).then(function(val){
 		if(val){
-			login.createCustomToken(req.body.username, db).then(token => {
+			login.createCustomToken(data.username, db).then(token => {
 				console.log("RECEIVED TOKEN: ", token);
-				res.send({"TOK": token, "status":"SUCCESS"});
-				return;
+				return {"TOK": token, "status":"SUCCESS"};
 			}).catch(error => sendFailure(res, error));
 		} else {
-			res.send({"status":"FAILED"});
+			console.log("failing");
+			return {"status":"FAILED"};
 		}
-		return;
-	}).catch(error => sendFailure(res, error));
+	}).catch(error => sendFailure(error));
 })
 
-app.post('/review', function(req, res){
-	//TODO: implement
-	res.send('Success')
+exports.review = functions.https.onCall((data, context) => {
+	return {"TODO":"do this function"}
 })
-
-function sendFailure(res, error){
-	console.log(error);
-	res.send('Failed');
-}
-
-exports.app = functions.https.onRequest(app);
