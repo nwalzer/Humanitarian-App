@@ -20,6 +20,7 @@ import Container from '@material-ui/core/Container';
 import Landing from './Landing';
 import Button from '@material-ui/core/Button';
 import Login from './Login';
+import RegisterAcc from './RegisterAcc';
 
 const drawerWidth = 300;
 const WhiteTextTypography = withStyles({
@@ -146,6 +147,7 @@ export default function PersistentDrawerLeft() {
         <Divider />
         <br/>
         <Login />
+        <RegisterAcc />
       </Drawer>
       <main
         className={clsx(classes.content, {
