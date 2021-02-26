@@ -12,7 +12,7 @@ const bodyParser = require('body-parser');
 const login = require('./login');
 const sanitize = require('./sanitize');
 
-const serviceAccount = require('./humanitarian-app-development-e24999441e22.json');
+const serviceAccount = require('./humanitarian-app-development-firebase-adminsdk-9casr-0ec4d4cdb4.json');
 
 firebase.initializeApp({
 	credential: firebase.credential.cert(serviceAccount)
