@@ -57,7 +57,7 @@ app.post('/register', function(req, res){
 })
 
 //Determines if a user has entered a valid username-password combo
-app.post('/login', function(req, res){
+app.post('/userlogin', function(req, res){
 	res.setHeader('Content-Type', 'application/json');
 	login.compareHash(db, req.body.username, req.body.pass).then(function(val){
 		if(val){
