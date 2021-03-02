@@ -25,6 +25,13 @@ function sendFailure(error) {
 }
 
 exports.register = functions.https.onCall((data, context) => {
+	if(!sanitize.validPhone(data.phone)){
+		return { "status": "FAILED", "error": "MALFORMED PHONE" }; 
+	} else if(!sanitize.validUsername(data.username)){
+		return { "status": "FAILED", "error": "MALFORMED UNAME" }; 
+	} else if(!sanitize.validPass(data.pass)){
+		return { "status": "FAILED", "error": "MALFORMED PASS" }; 
+	}
 	return login.userExists(db, data.username).then(exists => {
 		if (exists === true) {
 			return { "status": "FAILED", "error": "USER EXISTS" };
