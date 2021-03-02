@@ -46,25 +46,26 @@ function SimpleDialog(props) {
         onClose(selectedValue);
     };
 
-
-    //   const handleListItemClick = (value) => {
-    //     onClose(value);
-    //   };
-
     const handleLogin = () => {
-        var data = {username: username, pass: password};
+        var data = { username: username, pass: password };
         //firebase.functions().useEmulator("localhost", 5001);
         var login = firebase.functions().httpsCallable('login');
-        login(data).then(res=>{
+        return login(data).then(res => {
             console.log(res);
-            if(res.data.status == "FAILED" || res.data.status == "ERROR"){
+            if (res.data.status == "FAILED" || res.data.status == "ERROR") {
                 //do something
+                return false;
             } else {
                 console.log(res.data.TOK);
                 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
-                firebase.auth().signInWithCustomToken(res.data.TOK).then(userCred => {
+                return firebase.auth().signInWithCustomToken(res.data.TOK).then(userCred => {
+                    console.log(firebase.auth().currentUser);
                     console.log(userCred);
+                    return true;
                     //transition to new screen
+                }).catch(error => {
+                    console.log(error);
+                    return false;
                 })
             }
         });
@@ -93,7 +94,7 @@ function SimpleDialog(props) {
                     />
                 </ListItem>
             </List>
-            <Button onClick={handleLogin}> Login </Button>
+                <Button onClick={handleLogin()}> Login </Button>
         </Dialog>
     );
 }

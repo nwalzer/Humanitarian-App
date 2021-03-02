@@ -22,6 +22,10 @@ import Button from '@material-ui/core/Button';
 import Login from './Login';
 import RegisterAcc from './RegisterAcc';
 import Heatmap from './Heatmap';
+
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute.jsx"; 
+
 const drawerWidth = 300;
 const WhiteTextTypography = withStyles({
   root: {
@@ -107,6 +111,7 @@ export default function PersistentDrawerLeft() {
 
   return (
     <div className={classes.root}>
+      <Router>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -155,9 +160,15 @@ export default function PersistentDrawerLeft() {
         })}
       >
         <div className={classes.drawerHeader} />
-        <Landing />
-        <SearchBar />
+        <Switch>
+          <Route exact path="/"><Landing /></Route>
+          <ProtectedRoute path="/icebox" component={SearchBar}/>
+
+        </Switch>
+{/*         
+        <SearchBar /> */}
       </main>
+      </Router>
     </div>
   );
 }
