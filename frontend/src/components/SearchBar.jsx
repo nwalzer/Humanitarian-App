@@ -3,6 +3,7 @@ import { createMuiTheme, withStyles, ThemeProvider, makeStyles } from '@material
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import { useHistory  } from 'react-router-dom'
 
 
 
@@ -39,8 +40,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
+
+
 export default function BasicButtonGroup() {
     const classes = useStyles();
+    let history = useHistory();
+
+    const redirectMe = () => {
+        console.log("Redirecting"); 
+        history.push('/heatmap')
+    }
 
     return (
         <div className={classes.root}>
@@ -57,7 +67,7 @@ export default function BasicButtonGroup() {
                     variant="outlined"
                     color="secondary"
                 />
-                <Button color="secondary" variant="contained">
+                <Button onClick = {redirectMe} color="secondary" variant="contained">
                     Go!
                 </Button>
             </ButtonGroup>

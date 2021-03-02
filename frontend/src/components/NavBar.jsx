@@ -162,6 +162,7 @@ export default function PersistentDrawerLeft() {
         <div className={classes.drawerHeader} />
         <Switch>
           <Route exact path="/"><Landing /></Route>
+          <Route exact path="/heatmap"><Heatmap /></Route>
           <ProtectedRoute path="/icebox" component={SearchBar}/>
 
         </Switch>
