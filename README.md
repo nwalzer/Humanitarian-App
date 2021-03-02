@@ -4,7 +4,7 @@ Proof of concept application.
 
 Deployment can be found [here](https://humanitarian-app-development.web.app)
 
-This web app utilizes a REACT frontend with a nodeJS and firebase backend. 
+This web app utilizes a REACT frontend with a nodeJS and firebase backend. There is no actual *server*, as firebase offers a severless architecture. However, we have utilized firebase cloud functions to act as a server and, for readability, refer to the these functions as our server throughout this document.
 
 # Security Developments
 - [Password hashing](#Password-Hashing)
@@ -13,6 +13,7 @@ This web app utilizes a REACT frontend with a nodeJS and firebase backend.
 - [Firebase security rules](#Firebase-Security-Rules)
 - [Service account development](#Service-Account-Development)
 - [Protected REACT routes](#Protected-Routes)
+- [Data formatting](#Data-Formatting)
 
 ## Password Hashing
 In order to comply with general security recommendations, our user passwords are salted and hashed. We utilize the [bcrypt](https://www.npmjs.com/package/bcrypt) nodeJS module to handle password hashes and comparisons. There are several advantages to using the bcrypt module: 
@@ -56,6 +57,33 @@ Running our server using the Firebase Admin SDK means that it can bypass all dat
 ## Protected Routes
 As part of our REACT frontend, we needed to be able to specify specific web components that users could only access under certain conditions; namely, we needed to make our specific resource map and associated components unaccessible to users who weren't logged in. To do this, we utilized a REACT component that conditionally renders a specified component. When we want to render a protected component we instead insert one of these protected routes and specify the component to render if the condition passes. Within the protected route component, we first render a blank page and set the component's internal state to null. Once the component is rendered we call firebase auth and attempt to get the user that is currently signed in. If no such user exists, we change the protected route's internal state to false and redirect to the home page. If a user is signed in, we change the route's internal state to true and render the component we were protecting.
 
+## Data Formatting
+Data being written to firestore must first pass through our server, as no client has any write permissions. This data flow presents an opportunity for us to sanitize data and check for formatting and other requirements before we write to firestore. The data is formatted in the following manner:
+- Usernames
+    - Minimum of 4 characters
+    - Alphanumeric characters only
+    - Unique across all users
+- Passwords
+    - Minimum of 8 characters
+    - Maximum of 32 characters
+    - Must contain:
+        - 1 uppercase letter
+        - 1 lowercase letter
+        - 1 number
+        - 1 special character
+    - Must not contain any spaces
+- Phone Numbers
+    - Exactly 12 characters long
+    - Must start with "+1" (U.S. phone number)
+    - Must only contain numbers, with the exception of the starting "+"
+- Review Author
+    - Must be the username of an existing user
+- Review Content
+    - Not to exceed 300 characters
+    - Cannot contain inappropriate words
+- Review Rating
+    - Must be a number 1-5
+
 
 # Development Help
 
@@ -63,7 +91,7 @@ As part of our REACT frontend, we needed to be able to specify specific web comp
 Push to git using normal git commands
 
 ## Deploy to firebase
-Run 'firebase deploy' in the Server folder
+Run 'firebase deploy'
 
 ## Test entirely locally
 Run 'firebase emulators:start'
