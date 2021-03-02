@@ -18,8 +18,6 @@ import firebase from 'firebase/app';
 import 'firebase/functions';
 import 'firebase/auth';
 
-import userContext from '../contexts/user'
-
 const useStyles = makeStyles((theme) => ({
     avatar: {
         backgroundColor: blue[100],
@@ -47,11 +45,6 @@ function SimpleDialog(props) {
     const handleClose = () => {
         onClose(selectedValue);
     };
-
-
-    //   const handleListItemClick = (value) => {
-    //     onClose(value);
-    //   };
 
     const handleLogin = () => {
         var data = { username: username, pass: password };
@@ -101,19 +94,7 @@ function SimpleDialog(props) {
                     />
                 </ListItem>
             </List>
-            <userContext.Consumer>
-
-                {({ userState, toggleState }) => (<Button onClick={() => { 
-                    handleLogin().then(res=>{
-                        console.log("my response", res); 
-                        if (res) { 
-                            console.log("toggling the state:", userState); 
-                            toggleState(); 
-                            console.log("toggled the state", userState); 
-                        } })
-                    }}> Login </Button>)}
-
-            </userContext.Consumer>
+                <Button onClick={handleLogin()}> Login </Button>
         </Dialog>
     );
 }

@@ -1,26 +1,41 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import firebase from 'firebase/app';
-import 'firebase/functions';
 import 'firebase/auth';
-import SelectInput from '@material-ui/core/Select/SelectInput';
-import userContext from '../contexts/user';
-
 import SearchBar from './SearchBar';
 
+class ProtectedRoute extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            userStatus: null
+        }
+    } 
 
-const ProtectedRoute = () => { 
-    // Now all the data stored in the context can  
-    // be accessed with the auth variable 
-    const auth = React.useContext(userContext); 
-    console.log(auth)
-    console.log(auth.userState); 
+    componentDidMount(){
+        firebase.auth().onAuthStateChanged(user => {
+            console.log("Found", user);
+            let res = false;
+            if(user){
+                res = true;
+            } else {
+                res = false;
+            }
+            this.setState({userStatus: res}, () => {
+                console.log(this.state);
+            });
+        }) 
+    }
 
-    return auth.userState ? (
-        <SearchBar />
-    ) : (
-        <Redirect to={{ pathname: '/' }} />
-    );
-  }; 
-  export default ProtectedRoute; 
+    render(){
+        console.log(this.state);
+        return this.state && this.state.userStatus ? (
+            <SearchBar />
+        ) : (
+                <div/>
+            );
+    }
+}
+
+export default ProtectedRoute;
 
