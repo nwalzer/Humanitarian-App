@@ -21,21 +21,20 @@ firebase.initializeApp({
 const db = firebase.firestore();
 
 function sendFailure(error) {
-	return { "status": "ERROR", "message": error };
+	return { "status": "ERROR", "error": error };
 }
 
 exports.register = functions.https.onCall((data, context) => {
 	return login.userExists(db, data.username).then(exists => {
-		console.log("EXISTS: " + exists);
 		if (exists === true) {
-			return { "status": "FAILED" };
+			return { "status": "FAILED", "error": "USER EXISTS" };
 		} else {
 			return login.hashPassword(data.pass).then(function (hash) {
 				return login.addNewUser(db, data.username, data.phone, hash).then(function (val) {
 					if (val === true) {
 						return { "status": "SUCCESS" };
 					} else {
-						return { "status": "FAILED" };
+						return { "status": "FAILED", "error": "FAILED TO ADD" };
 					}
 				}).catch(error => sendFailure(error));
 			}).catch(error => sendFailure(error));
@@ -51,8 +50,7 @@ exports.login = functions.https.onCall((data, context) => {
 				return { "TOK": token, "status": "SUCCESS" };
 			}).catch(error => sendFailure(error));
 		} else {
-			console.log("failing");
-			return { "status": "FAILED" };
+			return { "status": "FAILED", "error": "PASSWORD MISMATCH" };
 		}
 	}).catch(error => sendFailure(error));
 })
