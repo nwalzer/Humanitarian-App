@@ -1,6 +1,7 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import SearchBar from './SearchBar';
 
 export default function LandingPage() {
     return (
@@ -22,6 +23,7 @@ export default function LandingPage() {
             </Typography>
                 <br />
             </Container>
+            <SearchBar /> 
         </div>
     )
 }
