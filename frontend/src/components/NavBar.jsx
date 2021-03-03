@@ -22,6 +22,7 @@ import Button from '@material-ui/core/Button';
 import Login from './Login';
 import RegisterAcc from './RegisterAcc';
 import Heatmap from './Heatmap';
+import UserMap from './UserMap';
 
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute.jsx"; 
@@ -162,7 +163,9 @@ export default function PersistentDrawerLeft() {
         <div className={classes.drawerHeader} />
         <Switch>
           <Route exact path="/"><Landing /></Route>
-          <ProtectedRoute path="/icebox" component={SearchBar}/>
+          <Route exact path="/"><SearchBar /></Route>
+          <Route exact path="/heatmap"><Heatmap /></Route>
+          <ProtectedRoute path="/userhome" component={UserMap}/>
 
         </Switch>
 {/*         
