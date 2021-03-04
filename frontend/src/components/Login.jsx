@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
 function SimpleDialog(props) {
     const classes = useStyles();
     const { onClose, selectedValue, open } = props;
@@ -100,7 +101,7 @@ function SimpleDialog(props) {
                     />
                 </ListItem>
             </List>
-                <Button onClick={handleLogin()}> Login </Button>
+                <Button onClick={handleLogin}> Login </Button>
         </Dialog>
     );
 }
