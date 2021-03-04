@@ -9,7 +9,7 @@
 const functions = require('firebase-functions');
 const firebase = require('firebase-admin');
 const bodyParser = require('body-parser');
-const login = require('./login');
+const db = require('./db');
 const sanitize = require('./sanitize');
 
 const serviceAccount = require('./humanitarian-app-development-firebase-adminsdk-9casr-0ec4d4cdb4.json');
@@ -18,12 +18,13 @@ firebase.initializeApp({
 	credential: firebase.credential.cert(serviceAccount)
 });
 
-const db = firebase.firestore();
+const firestore = firebase.firestore();
 
 function sendFailure(error) {
 	return { "status": "ERROR", "error": error };
 }
 
+//expecting username, pass, phone
 exports.register = functions.https.onCall((data, context) => {
 	if(!sanitize.validPhone(data.phone)){
 		return { "status": "FAILED", "error": "MALFORMED PHONE" }; 
@@ -32,12 +33,12 @@ exports.register = functions.https.onCall((data, context) => {
 	} else if(!sanitize.validPass(data.pass)){
 		return { "status": "FAILED", "error": "MALFORMED PASS" }; 
 	}
-	return login.userExists(db, data.username).then(exists => {
+	return db.userExists(firestore, data.username).then(exists => {
 		if (exists === true) {
 			return { "status": "FAILED", "error": "USER EXISTS" };
 		} else {
-			return login.hashPassword(data.pass).then(function (hash) {
-				return login.addNewUser(db, data.username, data.phone, hash).then(function (val) {
+			return db.hashPassword(data.pass).then(function (hash) {
+				return db.addNewUser(firestore, data.username, data.phone, hash).then(function (val) {
 					if (val === true) {
 						return { "status": "SUCCESS" };
 					} else {
@@ -49,10 +50,11 @@ exports.register = functions.https.onCall((data, context) => {
 	}).catch(error => sendFailure(error));
 })
 
+//expecting username, pass
 exports.login = functions.https.onCall((data, context) => {
-	return login.compareHash(db, data.username, data.pass).then(function (val) {
+	return db.compareHash(firestore, data.username, data.pass).then(function (val) {
 		if (val) {
-			return login.createCustomToken(data.username, db).then(token => {
+			return db.createCustomToken(data.username, firestore).then(token => {
 				console.log("RECEIVED TOKEN: ", token);
 				return { "TOK": token, "status": "SUCCESS" };
 			}).catch(error => sendFailure(error));
@@ -62,6 +64,25 @@ exports.login = functions.https.onCall((data, context) => {
 	}).catch(error => sendFailure(error));
 })
 
+//expecting anon, content, rating, locID
 exports.review = functions.https.onCall((data, context) => {
-	return { "TODO": "do this function" }
+	if(!context.auth){
+		return {"status": "FAILED", "error": "NO AUTH"}
+	} else if(!sanitize.validRating(data.rating)){
+		return {"status": "FAILED", "error": "BAD RATING"}
+	} else if(!sanitize.validContent(data.content)){
+		return {"status": "FAILED", "error": "BAD CONTENT"}
+	} else {
+		return db.getUname(firestore, context.auth.uid).then(uname => {
+			if (uname === "") {
+				return { "status": "FAILED", "error": "USER DNE" };
+			} else {
+				if(data.anon){
+					return db.review(firestore, "Anonymous", data.rating, data.content, data.locID, context.auth.uid);
+				} else {
+					return db.review(firestore, uname, data.rating, data.content, data.locID, context.auth.uid);
+				}
+			}
+		}).catch(error => sendFailure(error));
+	}
 })

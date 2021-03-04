@@ -37,4 +37,27 @@ function validPass(pword){
     return res;
 }
 
-module.exports = {validPhone, validUsername, validPass}
+//Check if rating is an integer between 1 and 5
+function validRating(rating){
+    try {
+        let numRate = parseInt(rating)
+        if(numRate < 1 || numRate > 5){
+            return false;
+        } else {
+            return true;
+        }
+    } catch (e){
+        return false;
+    }
+}
+
+//Checks for inappropriate words, 300 character limit.
+function validContent(content){
+    if(content.length > 300){
+        return false;
+    }
+
+    return true;
+}
+
+module.exports = {validPhone, validUsername, validPass, validContent, validRating}
