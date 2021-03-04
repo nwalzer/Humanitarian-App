@@ -18,6 +18,8 @@ import firebase from 'firebase/app';
 import 'firebase/functions';
 import 'firebase/auth';
 
+import { useHistory  } from 'react-router-dom'
+
 const useStyles = makeStyles((theme) => ({
     avatar: {
         backgroundColor: blue[100],
@@ -45,6 +47,8 @@ function SimpleDialog(props) {
     const handleClose = () => {
         onClose(selectedValue);
     };
+    let history = useHistory();
+
 
     const handleLogin = () => {
         var data = { username: username, pass: password };
@@ -61,6 +65,8 @@ function SimpleDialog(props) {
                 return firebase.auth().signInWithCustomToken(res.data.TOK).then(userCred => {
                     console.log(firebase.auth().currentUser);
                     console.log(userCred);
+                    console.log("Redirecting"); 
+                    history.push('/userhome')
                     return true;
                     //transition to new screen
                 }).catch(error => {

@@ -4,7 +4,7 @@ Proof of concept application.
 
 Deployment can be found [here](https://humanitarian-app-development.web.app)
 
-This web app utilizes a react frontend with a nodeJS and firebase backend. 
+This web app utilizes a REACT frontend with a nodeJS and firebase backend. There is no actual *server*, as firebase offers a severless architecture. However, we have utilized firebase cloud functions to act as a server and, for readability, refer to the these functions as our server throughout this document.
 
 # Security Developments
 - [Password hashing](#Password-Hashing)
@@ -12,6 +12,8 @@ This web app utilizes a react frontend with a nodeJS and firebase backend.
 - [Firebase authentication](#Firebase-Authentication)
 - [Firebase security rules](#Firebase-Security-Rules)
 - [Service account development](#Service-Account-Development)
+- [Protected REACT routes](#Protected-Routes)
+- [Data formatting](#Data-Formatting)
 
 ## Password Hashing
 In order to comply with general security recommendations, our user passwords are salted and hashed. We utilize the [bcrypt](https://www.npmjs.com/package/bcrypt) nodeJS module to handle password hashes and comparisons. There are several advantages to using the bcrypt module: 
@@ -43,7 +45,7 @@ When a user logs in, their username and password are sent to our server, which c
 Once a token has been generated and returned to the user, it is sent back to Firebase to authenticate the user. This authentication process stores the JWT in local session storage in the browser. When pages in our web app are loaded, we check the status of the Firebase Auth object, and if a user has data stored in the local storage they are considered 'logged in.' The Firebase Authentication object has the benefit of communicating this token to our database when querying, which is used by the access rules outlined in the next section.
 
 ## Firebase Security Rules
-For this web app we used Firebase's [Firestore database](https://firebase.google.com/docs/firestore/). Part of the functionality of Firestore is that anyone is able to query. To combat the glaring security issues associated with letting anyone query for any data, Firestore lets developers define access rules that can change who can access which data in which circumstances. These security rules are made more powerful by incorporating Firebase Authentication. As mentioned in the previous section, the Firebase Authentication object passes along our JWT to Firebase when we query Firestore. When Firestore is determining whether the query can be allowed through, we can use the JWT to understand who is querying and what permissions they have. For example, user profile information, such as username, email, password hash, and phone number, is set so that a user can only access a profile's information if the UID of the requester is the same as the UID of the information being requested. That is, a user can only query for data they own. 
+For this web app we used Firebase's [Firestore database](https://firebase.google.com/docs/firestore/). Part of the functionality of Firestore is that anyone is able to query. To combat the glaring security issues associated with letting anyone query for any data, Firestore lets developers define access rules that can change who can access which data in which circumstances. These security rules are made more powerful by incorporating Firebase Authentication. As mentioned in the previous section, the Firebase Authentication object passes along our JWT to Firebase when we query Firestore. When Firestore is determining whether the query can be allowed through, we can use the JWT to understand who is querying and what permissions they have. For example, user profile information, such as username, password hash, and phone number, is set so that a user can only access a profile's information if the UID of the requester is the same as the UID of the information being requested. That is, a user can only query for data they own. 
 
 ![user-info-access-rules](/pictures/user-info-rules.PNG "Profile Information Query Rules")
 
@@ -52,13 +54,44 @@ The security rules also allow us to restrict who can write to Firestore. By defa
 ## Service Account Development
 Running our server using the Firebase Admin SDK means that it can bypass all database security rules, opening up a major vulnerability should our server be compromised. Thankfully, in order to utilize the Admin SDK the SDK must be initialized with a service account JSON file. Firebase allows us to create as many service accounts as needed, each with their own unique set of permissions. The account used by the server has been granted database read/write access and authentication privileges. Should an unuathorized user gain access to our server we can simply revoke the account's privileges, halting all Firebase-related server activity. In our production environment this service account JSON exists as a physical file within Firebase's cloud servers. During development, however, each developer has been given a copy of this file, and certain environment variables can be configured to use this file, which the Admin SDK automatically reads upon initialization. Because the file does not need to reside within this codebase until the code is deploy to production, this private service account file does not need to be pushed to the repo and is therefore never made public. 
 
+## Protected Routes
+As part of our REACT frontend, we needed to be able to specify specific web components that users could only access under certain conditions; namely, we needed to make our specific resource map and associated components unaccessible to users who weren't logged in. To do this, we utilized a REACT component that conditionally renders a specified component. When we want to render a protected component we instead insert one of these protected routes and specify the component to render if the condition passes. Within the protected route component, we first render a blank page and set the component's internal state to null. Once the component is rendered we call firebase auth and attempt to get the user that is currently signed in. If no such user exists, we change the protected route's internal state to false and redirect to the home page. If a user is signed in, we change the route's internal state to true and render the component we were protecting.
+
+## Data Formatting
+Data being written to firestore must first pass through our server, as no client has any write permissions. This data flow presents an opportunity for us to sanitize data and check for formatting and other requirements before we write to firestore. The data is formatted in the following manner:
+- Usernames
+    - Minimum of 4 characters
+    - Alphanumeric characters only
+    - Unique across all users
+- Passwords
+    - Minimum of 8 characters
+    - Maximum of 32 characters
+    - Must contain:
+        - 1 uppercase letter
+        - 1 lowercase letter
+        - 1 number
+        - 1 special character
+    - Must not contain any spaces
+- Phone Numbers
+    - Exactly 12 characters long
+    - Must start with "+1" (U.S. phone number)
+    - Must only contain numbers, with the exception of the starting "+"
+- Review Author
+    - Must be the username of an existing user
+- Review Content
+    - Not to exceed 300 characters
+    - Cannot contain inappropriate words
+- Review Rating
+    - Must be a number 1-5
+
+
 # Development Help
 
 ## Push
 Push to git using normal git commands
 
 ## Deploy to firebase
-Run 'firebase deploy' in the Server folder
+Run 'firebase deploy'
 
 ## Test entirely locally
 Run 'firebase emulators:start'
