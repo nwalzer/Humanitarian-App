@@ -116,12 +116,23 @@ function createCustomToken(uname, db) {
 }
 
 function review(db, username, rating, content, locID, author) {
-  const userRef = db.collection('reviews');
-  return userRef.add({
+  const revRef = db.collection('reviews');
+  return revRef.add({
     uname: username,
     rating: rating,
     content: content,
-    locID: locID,
+    locID: locID
+  }).then(function (val) {
+    return setReviewAuthor(db, val.id, author);
+  }).catch(function (error) {
+    return {"status": "ERROR", "error": error};
+  });
+}
+
+function setReviewAuthor(db, revID, author){
+  const revAuthRef = db.collection('reviewAuthors');
+  return revAuthRef.add({
+    revID: revID,
     author: author
   }).then(function (val) {
     return {"status": "SUCCESS"};
