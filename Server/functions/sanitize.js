@@ -1,3 +1,5 @@
+const Filter = require('bad-words'),
+
 //Check if phone is in format +19876543210
 function validPhone(pnum){
     let num = pnum.toString();
@@ -53,7 +55,10 @@ function validRating(rating){
 
 //Checks for inappropriate words, 300 character limit.
 function validContent(content){
+    const filter = new Filter();
     if(content.length > 300){
+        return false;
+    } else if(filter.isProfane(content)){
         return false;
     }
 
