@@ -14,7 +14,8 @@ function validUsername(uname){
     if(uname.length <= 3){
         return false;
     }
-    uname = uname.replace(/[A-Za-z0-9]/, ""); //get rid of all alphanumeric characters
+    uname = uname.replace(/[A-Za-z0-9]/g, ""); //get rid of all alphanumeric characters
+    console.log("Reduced UNAME", uname);
     return !uname.length; 
 }
 
@@ -30,7 +31,7 @@ function validPass(pword){
 
     res = res && !!pword.match(/[0-9]/); //at least 1 number
 
-    res = res && (pword.replace(/[A-Za-z0-9]/, "").length > 0); //at least 1 special character
+    res = res && (pword.replace(/[A-Za-z0-9]/g, "").length > 0); //at least 1 special character
     
     res = res && (pword.replace(/\s+/, "").length === pword.length); //no spaces
     return res;
