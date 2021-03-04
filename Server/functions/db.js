@@ -70,6 +70,22 @@ function getHash(db, user) {
   });
 }
 
+function getUname(db, uid) {
+  const ref = db.collection('users').doc(uid);
+  return ref.get().then((doc) => {
+    if (doc.exists) {
+        console.log("Document data:", doc.data());
+        return doc.data().uname;
+    } else {
+        return "";
+    }
+}).catch((error) => {
+    console.log("Error getting document:", error);
+    return "";
+});
+
+}
+
 function createCustomToken(uname, db) {
   const ref = db.collection('users')
 
@@ -99,23 +115,19 @@ function createCustomToken(uname, db) {
 
 }
 
-function registerUser(username, pass, phone, email) {
-  admin
-    .auth()
-    .createUser({
-      email: email,
-      phoneNumber: phone,
-      password: pass,
-      displayName: username
-    })
-    .then((userRecord) => {
-      console.log('Successfully created new user:', userRecord.uid);
-      return;
-    })
-    .catch((error) => {
-      console.log('Error creating new user:', error);
-      return;
-    });
+function review(db, username, rating, content, locID, author) {
+  const userRef = db.collection('reviews');
+  return userRef.add({
+    uname: username,
+    rating: rating,
+    content: content,
+    locID: locID,
+    author: author
+  }).then(function (val) {
+    return {"status": "SUCCESS"};
+  }).catch(function (error) {
+    return {"status": "ERROR", "error": error};
+  });
 }
 
-module.exports = { addNewUser, hashPassword, userExists, compareHash, createCustomToken, registerUser };
+module.exports = { addNewUser, hashPassword, userExists, compareHash, createCustomToken, getUname, review };
