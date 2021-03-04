@@ -22,8 +22,9 @@ import Button from '@material-ui/core/Button';
 import Login from './Login';
 import RegisterAcc from './RegisterAcc';
 import Heatmap from './Heatmap';
-
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import TableauViz from './TableauViz';
+import Logout from './Logout';
+import {BrowserRouter as Router, Route, Switch, useHistory} from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute.jsx"; 
 
 const drawerWidth = 300;
@@ -108,6 +109,10 @@ export default function PersistentDrawerLeft() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  // let history = useHistory();
+  const handleHome = () => {
+    this.props.history.push("/");
+  };
 
   return (
     <div className={classes.root}>
@@ -129,9 +134,10 @@ export default function PersistentDrawerLeft() {
           >
             <MenuIcon />
           </IconButton>
-          <WhiteTextTypography variant="h6" noWrap>
+          {/* <WhiteTextTypography variant="h6" noWrap>
             Humanitarian MQP Application [TBD]
-          </WhiteTextTypography>
+          </WhiteTextTypography> */}
+            <Button color="primary" onClick={handleHome}> Humanitarian MQP Application </Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -152,6 +158,7 @@ export default function PersistentDrawerLeft() {
         <Divider />
         <br/>
         <Login />
+        <Logout /> 
         <RegisterAcc />
       </Drawer>
       <main
@@ -166,8 +173,9 @@ export default function PersistentDrawerLeft() {
           <ProtectedRoute path="/icebox" component={SearchBar}/>
 
         </Switch>
-{/*         
-        <SearchBar /> */}
+        
+        {/* <SearchBar /> */}
+        {/* <TableauViz /> */}
       </main>
       </Router>
     </div>

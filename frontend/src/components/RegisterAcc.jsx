@@ -83,6 +83,9 @@ function SimpleDialog(props) {
                     />
                 </ListItem>
                 <ListItem>
+                    <p>Password needs to be 8-32 characters, with at least 1 uppercase, 1 lowercase, 1 number and 1 special character. </p>
+                    </ListItem> 
+                <ListItem>
                     <PhoneInput
                         country="US"
                         placeholder="Phone Number"
@@ -101,8 +104,9 @@ SimpleDialog.propTypes = {
     selectedValue: PropTypes.string.isRequired,
 };
 
-export default function Login() {
+export default function Register() {
     const [open, setOpen] = React.useState(false);
+    const [user, setUser] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState();
 
     const handleClickOpen = () => {
@@ -114,12 +118,28 @@ export default function Login() {
         setSelectedValue(value);
     };
 
-    return (
-        <div>
-            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                Register Account
-      </Button>
-            <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
-        </div>
-    );
+    firebase.auth().onAuthStateChanged(userStatus => {
+        console.log("Found", userStatus);
+        if (userStatus) {
+            setUser(true);
+        } else {
+            setUser(false);
+        }
+    });
+
+    if (user) {
+        return <div></div>;
+    }
+    else {
+        return (
+            <div>
+                <Button color="primary" onClick={handleClickOpen}>
+                    Register Account
+                    </Button>
+                <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+
+
+            </div>
+        );
+    }
 }

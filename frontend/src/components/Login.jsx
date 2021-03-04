@@ -94,7 +94,7 @@ function SimpleDialog(props) {
                     />
                 </ListItem>
             </List>
-                <Button onClick={handleLogin()}> Login </Button>
+            <Button onClick={handleLogin}> Login </Button>
         </Dialog>
     );
 }
@@ -107,6 +107,7 @@ SimpleDialog.propTypes = {
 
 export default function Login() {
     const [open, setOpen] = React.useState(false);
+    const [user, setUser] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState();
 
     const handleClickOpen = () => {
@@ -118,12 +119,29 @@ export default function Login() {
         setSelectedValue(value);
     };
 
-    return (
-        <div>
-            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                Login
-      </Button>
-            <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
-        </div>
-    );
+    firebase.auth().onAuthStateChanged(userStatus => {
+        console.log("Found", userStatus);
+        if (userStatus) {
+            setUser(true);
+        } else {
+            setUser(false);
+        }
+    });
+
+    if (user) {
+        return <div></div>;
+    }
+    else {
+        return (
+            <div>
+                <Button color="primary" onClick={handleClickOpen}>
+                    Login
+                    </Button>
+                <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+
+
+            </div>
+        );
+    }
+
 }
