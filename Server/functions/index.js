@@ -26,6 +26,10 @@ function sendFailure(error) {
 
 //expecting username, pass, phone
 exports.register = functions.https.onCall((data, context) => {
+	if(context.auth){
+		return {"status": "FAILED", "error": "USER LOGGED IN"}
+	}
+	
 	if(!sanitize.validPhone(data.phone)){
 		return { "status": "FAILED", "error": "MALFORMED PHONE" }; 
 	} else if(!sanitize.validUsername(data.username)){
@@ -52,6 +56,10 @@ exports.register = functions.https.onCall((data, context) => {
 
 //expecting username, pass
 exports.login = functions.https.onCall((data, context) => {
+	if(context.auth){
+		return {"status": "FAILED", "error": "USER LOGGED IN"}
+	}
+
 	return db.compareHash(firestore, data.username, data.pass).then(function (val) {
 		if (val) {
 			return db.createCustomToken(data.username, firestore).then(token => {
