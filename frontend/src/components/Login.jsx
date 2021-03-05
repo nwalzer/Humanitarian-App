@@ -37,17 +37,33 @@ const useStyles = makeStyles((theme) => ({
 function SimpleDialog(props) {
     const classes = useStyles();
     const { onClose, selectedValue, open } = props;
-    const [username, setUsername] = useState(" ");
-    const [password, setPassword] = useState(" ");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [disableLogin, setDisableLogin] = useState(true);
+    const [error, setError] = useState("");
+
     const handleUsername = (event) => {
         setUsername(event.target.value);
+        evalLogin(event.target.value, password);
     }
     const handlePassword = (event) => {
         setPassword(event.target.value);
+        evalLogin(username, event.target.value);
     }
     const handleClose = () => {
         onClose(selectedValue);
     };
+
+    const evalLogin = (uname, pword) => {
+        if(uname.length < 4 || uname.length > 16 || uname.replace(/[A-Za-z0-9]/g, "").length > 0){
+            setDisableLogin(true);
+        } else if (pword.length === 0){
+            setDisableLogin(true);
+        } else {
+            setDisableLogin(false);
+        }
+    }
+
     let history = useHistory();
 
 
@@ -58,14 +74,13 @@ function SimpleDialog(props) {
         return login(data).then(res => {
             console.log(res);
             if (res.data.status == "FAILED" || res.data.status == "ERROR") {
-                //do something
+                setError("This username and password combination is not valid, please try again");
                 return false;
             } else {
+                setError("");
                 console.log(res.data.TOK);
                 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
                 return firebase.auth().signInWithCustomToken(res.data.TOK).then(userCred => {
-                    console.log(firebase.auth().currentUser);
-                    console.log(userCred);
                     console.log("Redirecting"); 
                     history.push('/userhome')
                     return true;
@@ -101,7 +116,8 @@ function SimpleDialog(props) {
                     />
                 </ListItem>
             </List>
-            <Button onClick={handleLogin}> Login </Button>
+            <p style={{ color: 'red' }}>{error}</p>
+            <Button disabled={disableLogin} onClick={handleLogin}> Login </Button>
         </Dialog>
     );
 }
