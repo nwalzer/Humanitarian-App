@@ -18,6 +18,8 @@ import firebase from 'firebase/app';
 import 'firebase/functions';
 import 'firebase/auth';
 
+import { useHistory  } from 'react-router-dom'
+
 const useStyles = makeStyles((theme) => ({
     avatar: {
         backgroundColor: blue[100],
@@ -30,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
 }));
+
 
 function SimpleDialog(props) {
     const classes = useStyles();
@@ -45,6 +48,8 @@ function SimpleDialog(props) {
     const handleClose = () => {
         onClose(selectedValue);
     };
+    let history = useHistory();
+
 
     const handleLogin = () => {
         var data = { username: username, pass: password };
@@ -61,6 +66,8 @@ function SimpleDialog(props) {
                 return firebase.auth().signInWithCustomToken(res.data.TOK).then(userCred => {
                     console.log(firebase.auth().currentUser);
                     console.log(userCred);
+                    console.log("Redirecting"); 
+                    history.push('/userhome')
                     return true;
                     //transition to new screen
                 }).catch(error => {
@@ -94,7 +101,7 @@ function SimpleDialog(props) {
                     />
                 </ListItem>
             </List>
-                <Button onClick={handleLogin()}> Login </Button>
+            <Button onClick={handleLogin}> Login </Button>
         </Dialog>
     );
 }
@@ -107,6 +114,7 @@ SimpleDialog.propTypes = {
 
 export default function Login() {
     const [open, setOpen] = React.useState(false);
+    const [user, setUser] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState();
 
     const handleClickOpen = () => {
@@ -118,12 +126,28 @@ export default function Login() {
         setSelectedValue(value);
     };
 
-    return (
-        <div>
-            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                Login
-      </Button>
-            <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
-        </div>
-    );
+    firebase.auth().onAuthStateChanged(userStatus => {
+        if (userStatus) {
+            setUser(true);
+        } else {
+            setUser(false);
+        }
+    });
+
+    if (user) {
+        return <div></div>;
+    }
+    else {
+        return (
+            <div>
+                <Button color="primary" onClick={handleClickOpen}>
+                    Login
+                    </Button>
+                <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+
+
+            </div>
+        );
+    }
+
 }

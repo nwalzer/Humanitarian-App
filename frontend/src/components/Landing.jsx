@@ -2,6 +2,7 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import SearchBar from './SearchBar';
+import TableauViz from './TableauViz';
 
 export default function LandingPage() {
     return (
@@ -19,11 +20,10 @@ export default function LandingPage() {
                 <Typography variant="subtitle1" gutterBottom>
                     Don't want to create an account but would like to see how a city/town is doing in terms of LGBT+ representation? Our application has
             an <b>open feature</b> for the public that allows you to visualize the distribution of LGBT+ location resources in any given city/town in our database!
-            Just search here:
             </Typography>
                 <br />
             </Container>
-            <SearchBar /> 
+            {/* <TableauViz/> */}
         </div>
     )
 }
