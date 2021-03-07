@@ -35,13 +35,13 @@ export default function ResourceList(){
     let history = useHistory();
 
     const handleClick = (doc) => {
-        console.log(doc);
         setOpen(true);
         setSelectedData(doc);
     }
 
     const handleClose = () => {
         setOpen(false);
+        setSelectedData();
     };
 
     firebase.auth().onAuthStateChanged(userStatus => {
