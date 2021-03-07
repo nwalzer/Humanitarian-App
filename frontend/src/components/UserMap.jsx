@@ -1,10 +1,12 @@
 import React from 'react';
+import ResourceList from './ResourceList';
 
 
 export default function UserMap() {
     return (
         <div>
-          <p>Here is where my MapBox map will go!</p>
+          <p>Resource list test</p>
+          <ResourceList/>
         </div>
     )
 }
