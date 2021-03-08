@@ -9,11 +9,11 @@ class ProtectedRoute extends React.Component {
         this.state = {
             userStatus: null
         }
+        console.log(props);
     }
 
     componentDidMount() {
         firebase.auth().onAuthStateChanged(user => {
-            console.log("Found", user);
             let res = false;
             if (user) {
                 res = true;
@@ -21,6 +21,7 @@ class ProtectedRoute extends React.Component {
                 res = false;
             }
             this.setState({ userStatus: res }, () => {
+                //this output forces a state update
                 console.log(this.state);
             });
         })
@@ -30,9 +31,6 @@ class ProtectedRoute extends React.Component {
 
         const Component = this.props.component;
 
-        console.log("My State: ", this.state);
-        console.log("My Status: ", this.state.userStatus);
-
         if (this.state != null) {
 
             if (this.state.userStatus == null) {
@@ -40,7 +38,13 @@ class ProtectedRoute extends React.Component {
             }
 
             if (this.state && this.state.userStatus) {
-                return <Component />;
+                let pathID = "";
+                try {
+                    pathID = this.props.computedMatch.params.id;
+                } catch (e){
+                    pathID = "";
+                }
+                return <Component pathID={pathID}/>;
             }
             else if (!(this.state && this.state.userStatus)) {
                 return <Redirect to={{ pathname: '/' }} />;

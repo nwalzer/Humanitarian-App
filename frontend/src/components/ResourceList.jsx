@@ -9,6 +9,11 @@ import { useHistory  } from 'react-router-dom'
 
 function SimpleDialog(props) {
     const { onClose, open, docInfo } = props;
+    let history = useHistory();
+
+    const handleReview = () => {
+        history.push('/review/' + docInfo.uid);
+    }
 
     console.log(docInfo);
 
@@ -16,7 +21,7 @@ function SimpleDialog(props) {
         <Dialog onClose={onClose} aria-labelledby="simple-dialog-title" open={open}>
             <DialogTitle id="simple-dialog-title">Resource Information</DialogTitle>
             info goes here
-            <Button> Leave a Review </Button>
+            <Button onClick={handleReview}> Leave a Review </Button>
         </Dialog>
     );
 }
