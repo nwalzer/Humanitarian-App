@@ -7,6 +7,16 @@ import { List, ListItem } from '@material-ui/core';
 export default function ResourceList(){
     const [user, setUser] = useState(false);
     const [dbData, setDBData] = useState();
+    const useStyles = theme => ({
+      root: {
+        width: '100%',
+        maxWidth: 360,
+        backgroundColor: theme.palette.background.paper,
+        listItemText:{
+          fontSize:'0.7em',//Insert your required size
+  }
+  },
+});
 
     firebase.auth().onAuthStateChanged(userStatus => {
         if (userStatus && !user) {
@@ -37,9 +47,10 @@ export default function ResourceList(){
     if (user && dbData) {
         console.log(dbData);
         const listItems = dbData.map((doc) =>
-            <ListItem>Name: {doc.Name}. Address: {doc.Address}. Email: {doc.Email}</ListItem>
+            <ListItem>
+            Name: {doc.Name}. Address: {doc.Address}. Email: {doc.Email}</ListItem>
         );
-        return <List>
+        return <List style={{maxHeight: '100', overflow: 'auto'}}>
             {listItems}
         </List>;
     }
