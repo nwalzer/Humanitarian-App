@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
-import { List, ListItem, Dialog, DialogTitle, Button } from '@material-ui/core';
+import { List, ListItem, ListItemText, ListItemIcon, Dialog, DialogTitle, Button } from '@material-ui/core';
+import StarIcon from '@material-ui/icons/Star';
 import PropTypes from 'prop-types';
 import { useHistory  } from 'react-router-dom'
 
@@ -33,6 +34,40 @@ export default function ResourceList(){
     const [dbData, setDBData] = useState();
     const [selectedData, setSelectedData] = useState();
     let history = useHistory();
+
+    const listStyle = {
+      height: '50vh',
+      width: '50vh',
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      float: 'right',
+      flexDirection: 'column',
+      display: 'flex'
+    }
+
+    const listItemStyle = {
+      backgroundColor: '#c4c4c4',
+      width: '47vh',
+      border: '1px solid #444',
+      margin: '5px',
+      borderRadius:25,
+      display: 'flex'
+    }
+
+    const listItemTextStyle = {
+      width: '45vh',
+      fontSize:16,
+      color: '#000000'
+    }
+
+    const listIconStyle ={
+      color: '#ffc107',
+      justifyContent: 'flex-end',
+      display: 'flex',
+      alignItems: 'center',
+      flexWrap: 'wrap',
+      justify: 'flex-end'
+    }
 
     const handleClick = (doc) => {
         setOpen(true);
@@ -73,23 +108,23 @@ export default function ResourceList(){
 
     if (user && dbData) {
         const listItems = dbData.map((doc) =>
-<<<<<<< HEAD
-            <ListItem>
-            Name: {doc.Name}. Address: {doc.Address}. Email: {doc.Email}</ListItem>
-        );
-        return <List style={{maxHeight: '100', overflow: 'auto'}}>
-            {listItems}
-        </List>;
-=======
-            <ListItem button onClick={() => {handleClick(doc);}}>Name: {doc.Name}. Address: {doc.Address}. Email: {doc.Email}</ListItem>
+            <ListItem style={listItemStyle} button onClick={() => {handleClick(doc);}}>
+              <ListItemText style={listItemTextStyle}
+                primary = {doc.Name}
+                secondary = {doc.Address} />
+                <ListItemIcon style = {listIconStyle}>
+                  <StarIcon />
+                </ListItemIcon>
+                <ListItemText
+                  secondary = "5/5" />
+            </ListItem>
         );
         return <div>
-            <List>
+            <List style={listStyle}>
                 {listItems}
             </List>
             <SimpleDialog open={open} onClose={handleClose} docInfo={selectedData} />
         </div>;
->>>>>>> 0a5c23dc344621097c4d96f9e29d75280169c21c
     }
     else {
         return (
