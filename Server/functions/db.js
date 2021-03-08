@@ -74,12 +74,11 @@ function getUname(db, uid) {
   const ref = db.collection('users').doc(uid);
   return ref.get().then((doc) => {
     if (doc.exists) {
-        console.log("Document data:", doc.data());
         return doc.data().uname;
     } else {
         return "";
     }
-}).catch((error) => {
+  }).catch((error) => {
     console.log("Error getting document:", error);
     return "";
 });

@@ -81,6 +81,7 @@ exports.review = functions.https.onCall((data, context) => {
 	} else if(!sanitize.validContent(data.content)){
 		return {"status": "FAILED", "error": "BAD CONTENT"}
 	} else {
+
 		return db.getUname(firestore, context.auth.uid).then(uname => {
 			if (uname === "") {
 				return { "status": "FAILED", "error": "USER DNE" };
