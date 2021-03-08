@@ -26,6 +26,7 @@ import TableauViz from './TableauViz';
 import Logout from './Logout';
 import {BrowserRouter as Router, Route, Switch, useHistory} from "react-router-dom";
 import UserMap from './UserMap';
+import Review from './Review';
 import ProtectedRoute from "./ProtectedRoute.jsx"; 
 
 const drawerWidth = 300;
@@ -168,6 +169,7 @@ export default function PersistentDrawerLeft() {
           <Route exact path="/"><SearchBar /></Route>
           <Route exact path="/heatmap"><Heatmap /></Route>
           <ProtectedRoute path="/userhome" component={UserMap}/>
+          <ProtectedRoute path="/review/:id" component={Review}/>
 
         </Switch>
         
