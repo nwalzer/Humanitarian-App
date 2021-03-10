@@ -5,8 +5,20 @@ import 'firebase/auth';
 import { List, ListItem, ListItemText, ListItemIcon, Dialog, DialogTitle, Button } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/styles';
 import { useHistory  } from 'react-router-dom'
 
+
+const dialogStyle = {
+  dialogPaper: {
+        minHeight: '80vh',
+        maxHeight: '80vh',
+    },
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: '#00000'
+}
 
 function SimpleDialog(props) {
     const { onClose, open, docInfo } = props;
@@ -14,9 +26,10 @@ function SimpleDialog(props) {
     console.log(docInfo);
 
     return (
-        <Dialog onClose={onClose} aria-labelledby="simple-dialog-title" open={open}>
+        <Dialog style={dialogStyle} onClose={onClose} aria-labelledby="simple-dialog-title" open={open}>
+        fullWidth={true}
+        maxWidth={'md'}
             <DialogTitle id="simple-dialog-title">Resource Information</DialogTitle>
-            info goes here
             <Button> Leave a Review </Button>
         </Dialog>
     );
@@ -111,7 +124,8 @@ export default function ResourceList(){
             <ListItem style={listItemStyle} button onClick={() => {handleClick(doc);}}>
               <ListItemText style={listItemTextStyle}
                 primary = {doc.Name}
-                secondary = {doc.Address} />
+                secondary = {doc.Address}/>
+
                 <ListItemIcon style = {listIconStyle}>
                   <StarIcon />
                 </ListItemIcon>
@@ -123,7 +137,7 @@ export default function ResourceList(){
             <List style={listStyle}>
                 {listItems}
             </List>
-            <SimpleDialog open={open} onClose={handleClose} docInfo={selectedData} />
+            <SimpleDialog style={{color: '#00000'}} open={open} onClose={handleClose} docInfo={selectedData} />
         </div>;
     }
     else {
