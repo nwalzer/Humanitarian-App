@@ -22,6 +22,11 @@ const dialogStyle = {
 
 function SimpleDialog(props) {
     const { onClose, open, docInfo } = props;
+    let history = useHistory();
+
+    const handleReview = () => {
+        history.push('/review/' + docInfo.uid);
+    }
 
     console.log(docInfo);
 
@@ -30,7 +35,8 @@ function SimpleDialog(props) {
         fullWidth={true}
         maxWidth={'md'}
             <DialogTitle id="simple-dialog-title">Resource Information</DialogTitle>
-            <Button> Leave a Review </Button>
+            info goes here
+            <Button onClick={handleReview}> Leave a Review </Button>
         </Dialog>
     );
 }
