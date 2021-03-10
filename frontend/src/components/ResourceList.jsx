@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
-import { List, ListItem, ListItemText, ListItemIcon, Dialog, DialogTitle, Button } from '@material-ui/core';
+import { List, ListItem, ListItemText, ListItemIcon, Dialog, DialogTitle, DialogContent, DialogContentText, Button } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';
@@ -10,10 +10,8 @@ import { useHistory  } from 'react-router-dom'
 
 
 const dialogStyle = {
-  dialogPaper: {
-        minHeight: '80vh',
-        maxHeight: '80vh',
-    },
+  height: '50vh',
+  width: '50vh',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -29,10 +27,20 @@ function SimpleDialog(props) {
     }
     console.log(docInfo);
     return (
-        <Dialog style={dialogStyle} onClose={onClose} aria-labelledby="simple-dialog-title" open={open}>
-            <DialogTitle id="simple-dialog-title">Resource Information</DialogTitle>
+      <div style={dialogStyle}>
+        <Dialog onClose={onClose} aria-labelledby="simple-dialog-title" open={open}>
+            <DialogTitle id="simple-dialog-title">Name</DialogTitle>
+            <DialogContent>
+            <DialogContentText id="alert-dialog-description" primary = "Address">
+            Address
+            Number
+            Email
+            Description
+            </DialogContentText>
+            </DialogContent>
             <Button onClick={handleReview}> Leave a Review </Button>
         </Dialog>
+        </div>
     );
 }
 
@@ -50,11 +58,10 @@ export default function ResourceList(){
     let history = useHistory();
 
     const listStyle = {
-      height: '50vh',
+      height: '80vh',
       width: '50vh',
       overflowY: 'auto',
       overflowX: 'hidden',
-      float: 'right',
       flexDirection: 'column',
       display: 'flex'
     }
