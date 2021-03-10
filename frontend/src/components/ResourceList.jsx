@@ -27,15 +27,10 @@ function SimpleDialog(props) {
     const handleReview = () => {
         history.push('/review/' + docInfo.uid);
     }
-
     console.log(docInfo);
-
     return (
         <Dialog style={dialogStyle} onClose={onClose} aria-labelledby="simple-dialog-title" open={open}>
-        fullWidth={true}
-        maxWidth={'md'}
             <DialogTitle id="simple-dialog-title">Resource Information</DialogTitle>
-            info goes here
             <Button onClick={handleReview}> Leave a Review </Button>
         </Dialog>
     );
@@ -143,7 +138,7 @@ export default function ResourceList(){
             <List style={listStyle}>
                 {listItems}
             </List>
-            <SimpleDialog style={{color: '#00000'}} open={open} onClose={handleClose} docInfo={selectedData} />
+            <SimpleDialog open={open} onClose={handleClose} docInfo={selectedData} />
         </div>;
     }
     else {
