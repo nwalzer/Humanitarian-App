@@ -1,10 +1,18 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import SearchBar from './SearchBar';
-import TableauViz from './TableauViz';
+
+import Button from '@material-ui/core/Button';
+import { useHistory  } from 'react-router-dom'
 
 export default function LandingPage() {
+    let history = useHistory();
+
+    const redirectMe = () => {
+        console.log("Redirecting"); 
+        history.push('/heatmap')
+    }
+    
     return (
         <div>
             <Container maxWidth="md">
@@ -23,7 +31,9 @@ export default function LandingPage() {
             </Typography>
                 <br />
             </Container>
-            {/* <TableauViz/> */}
+            <Button onClick = {redirectMe} color="secondary" variant="contained">
+                    Go!
+                </Button>
         </div>
     )
 }
