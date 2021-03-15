@@ -19,5 +19,8 @@ service cloud.firestore {
     match /reviewAuthors/{revAuthID} {
     	allow read, write: if false;
     }
+    match /userOTP/{uotpID} {
+    	allow read, write: if false;
+    }
   }
 }
