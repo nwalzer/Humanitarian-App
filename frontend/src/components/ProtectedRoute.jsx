@@ -28,16 +28,11 @@ class ProtectedRoute extends React.Component {
     }
 
     render() {
-
         const Component = this.props.component;
-
         if (this.state != null) {
-
             if (this.state.userStatus == null) {
                 return <div></div>;
-            }
-
-            if (this.state && this.state.userStatus) {
+            } else if (this.state.userStatus) {
                 let pathID = "";
                 try {
                     pathID = this.props.computedMatch.params.id;
@@ -46,16 +41,13 @@ class ProtectedRoute extends React.Component {
                 }
                 return <Component pathID={pathID}/>;
             }
-            else if (!(this.state && this.state.userStatus)) {
+            else {
                 return <Redirect to={{ pathname: '/' }} />;
             }
-
         }
         else {
             return <div></div>;
         }
-
-
     }
 }
 
