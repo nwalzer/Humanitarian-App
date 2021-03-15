@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const admin = require('firebase-admin');
 
-function addNewUser(db, uname, phone, pass) {
+function addNewUser(db, uname, phone, pass, otp) {
   const userRef = db.collection('users');
   return userRef.add({
     phone: phone,
@@ -9,7 +9,15 @@ function addNewUser(db, uname, phone, pass) {
     uname: uname
   }).then(function (val) {
     console.log("ADDED: ", val.id);
-    return true;
+    const userOTPRef = db.collection('userOTP');
+    return userOTPRef.doc(val.id).set({
+      otp: otp
+    }).then(function(val) {
+      return true;
+    }).catch(function (error){
+      console.log(error);
+      return false;
+    })
   }).catch(function (error) {
     console.log(error);
     return false;
@@ -41,15 +49,15 @@ const hashPassword = async (password, saltRounds = 12) => {
 };
 
 function compareHash(db, user, pword) {
-  return getHash(db, user).then(function (hash) {
-    if (hash === "FAILED") {
-      return false;
-    } else {
-      return bcrypt.compare(String(pword), String(hash));
+  return getHash(db, user).then(function (results) {
+    if (!results.length) {
+      return "";
+    } else if(bcrypt.compare(String(pword), String(results[0]))){
+      return results[1];
     }
   }).catch(function (error) {
     console.log(error);
-    return false;
+    return "";
   });
 }
 
@@ -58,14 +66,15 @@ function getHash(db, user) {
   return ref.where('uname', '==', user).get().then(snapshot => {
     if (snapshot.empty) {
       console.log("USER DOES NOT EXIST");
-      return "FAILED";
+      return [];
     } else {
       let hash = "";
+      let uid = "";
       snapshot.forEach(doc => {
         hash = doc.data().phash;
+        uid = doc.id;
       });
-      console.log("RETRIEVED HASH");
-      return hash;
+      return [hash, uid];
     }
   });
 }
@@ -81,8 +90,21 @@ function getUname(db, uid) {
   }).catch((error) => {
     console.log("Error getting document:", error);
     return "";
-});
+  });
+}
 
+function getOTP(db, uid){
+  const ref = db.collection('userOTP').doc(uid);
+    return ref.get().then((doc) => {
+      if (doc.exists) {
+        return doc.data().otp;
+    } else {
+        return "";
+    }
+  }).catch((error) => {
+    console.log("Error getting document:", error);
+    return "";
+  });
 }
 
 function createCustomToken(uname, db) {
@@ -140,4 +162,4 @@ function setReviewAuthor(db, revID, author){
   });
 }
 
-module.exports = { addNewUser, hashPassword, userExists, compareHash, createCustomToken, getUname, review };
+module.exports = { addNewUser, hashPassword, userExists, compareHash, createCustomToken, getUname, getOTP, review };

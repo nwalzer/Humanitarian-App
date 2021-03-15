@@ -11,6 +11,7 @@ const firebase = require('firebase-admin');
 const bodyParser = require('body-parser');
 const db = require('./db');
 const sanitize = require('./sanitize');
+const mfa = require('./2fa');
 
 const serviceAccount = require('./humanitarian-app-development-firebase-adminsdk-9casr-0ec4d4cdb4.json');
 
@@ -42,9 +43,10 @@ exports.register = functions.https.onCall((data, context) => {
 			return { "status": "FAILED", "error": "USER EXISTS" };
 		} else {
 			return db.hashPassword(data.pass).then(function (hash) {
-				return db.addNewUser(firestore, data.username, data.phone, hash).then(function (val) {
+				const newSecret = mfa.generateSecret(data.username);
+				return db.addNewUser(firestore, data.username, data.phone, hash, newSecret.secret).then(function (val) {
 					if (val === true) {
-						return { "status": "SUCCESS" };
+						return { "status": "SUCCESS", "qr": newSecret.qr };
 					} else {
 						return { "status": "FAILED", "error": "FAILED TO ADD" };
 					}
@@ -54,17 +56,27 @@ exports.register = functions.https.onCall((data, context) => {
 	}).catch(error => sendFailure(error));
 })
 
-//expecting username, pass
+//expecting username, pass, 2FA code
 exports.login = functions.https.onCall((data, context) => {
 	if(context.auth){
 		return {"status": "FAILED", "error": "USER LOGGED IN"}
 	}
 
 	return db.compareHash(firestore, data.username, data.pass).then(function (val) {
-		if (val) {
-			return db.createCustomToken(data.username, firestore).then(token => {
-				console.log("RECEIVED TOKEN: ", token);
-				return { "TOK": token, "status": "SUCCESS" };
+		if (val !== "") {
+			console.log(val);
+			return db.getOTP(firestore, val).then((otp) => {
+				if(otp !== ""){
+					if(mfa.verifyToken(otp, String(data.code))){
+						return db.createCustomToken(data.username, firestore).then(token => {
+							return { "TOK": token, "status": "SUCCESS" };
+						}).catch(error => sendFailure(error));
+					} else {
+						return { "status": "FAILED", "error": "BAD OTP" };
+					}
+				} else {
+					return { "status": "FAILED", "error": "NO OTP" };
+				}
 			}).catch(error => sendFailure(error));
 		} else {
 			return { "status": "FAILED", "error": "PASSWORD MISMATCH" };
