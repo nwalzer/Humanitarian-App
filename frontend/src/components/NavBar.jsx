@@ -15,7 +15,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import SearchBar from './SearchBar';
 import Container from '@material-ui/core/Container';
 import Landing from './Landing';
 import Button from '@material-ui/core/Button';
@@ -132,7 +131,7 @@ export default function PersistentDrawerLeft() {
             <MenuIcon />
           </IconButton>
           <WhiteTextTypography variant="h6" noWrap>
-            Humanitarian MQP Application [TBD]
+            LGBT+ Resource Application Prototype
           </WhiteTextTypography> 
         </Toolbar>
       </AppBar>
@@ -168,7 +167,6 @@ export default function PersistentDrawerLeft() {
           <Route exact path="/heatmap"><Heatmap /></Route>
           <ProtectedRoute path="/userhome" component={UserMap}/>
           <ProtectedRoute path="/review/:id" component={Review}/>
-
         </Switch>
         
       </main>
