@@ -72,13 +72,11 @@ function SimpleDialog(props) {
         //firebase.functions().useEmulator("localhost", 5001);
         var login = firebase.functions().httpsCallable('login');
         return login(data).then(res => {
-            console.log(res);
             if (res.data.status == "FAILED" || res.data.status == "ERROR") {
                 setError("This username and password combination is not valid, please try again");
                 return false;
             } else {
                 setError("");
-                console.log(res.data.TOK);
                 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
                 return firebase.auth().signInWithCustomToken(res.data.TOK).then(userCred => {
                     console.log("Redirecting"); 

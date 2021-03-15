@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ResourceList from './ResourceList';
 
 import config from '../assets/mapbox.json'
 import mapboxgl from 'mapbox-gl';
@@ -146,6 +147,7 @@ export default function UserMap() {
       </div>
     </div>
     <div className="map-container" ref={mapContainer} />
+    <ResourceList/>
   </div>
 
 }

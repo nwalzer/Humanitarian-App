@@ -34,18 +34,13 @@ class ProtectedRoute extends React.Component {
     }
 
     render() {
-
-        console.log("My State: ", this.state);
         if (this.state != null) {
-
             if (this.state.userStatus == null) {
                 return <div></div>;
-            }
-
-            if (this.state && this.state.userStatus) {
+            } else if (this.state.userStatus) {
                 return <Button color="primary" onClick = {this.handleClick.bind(this)}>Logout</Button>;
             }
-            else if (!(this.state && this.state.userStatus)) {
+            else {
                 return <div></div>;
             }
 
