@@ -39,6 +39,7 @@ function SimpleDialog(props) {
     const [password, setPassword] = useState("");
     const [phonenum, setPhoneNumber] = useState("");
     const [passwordMatch, setPasswordMatch] = useState("");
+    const [otpURL, setOTPURL] = useState("");
     const [disableRegister, setRegister] = useState(true);
     const [error, setError] = useState("");
 
@@ -114,62 +115,71 @@ function SimpleDialog(props) {
                         console.log(res.data.error);
                 }
             } else {
-                setError("Registration successful");
+                setOTPURL(res.data.qr);
             }
         });
     }
 
-    return (
+    if(otpURL !== ""){
+        return (
         <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-            <DialogTitle id="simple-dialog-title">Create a new account:</DialogTitle>
-            <List>
-                <ListItem>
-                    <TextField
-                        onChange={handleUsername}
-                        id="standard-username-input"
-                        label="Create Username"
-                        type="username"
-                        autoComplete="current-username"
-                    />
-                </ListItem>
-                <ListItem>
-                    <p>Username must be 4-16 characters, containing only letters and numbers </p>
-                </ListItem> 
-                <ListItem>
-                    <TextField
-                        onChange={handlePassword}
-                        id="standard-password-input"
-                        label="Create Password"
-                        type="password"
-                        autoComplete="current-password"
-                    />
-                </ListItem>
-                <ListItem>
-                    <p>Password must be 8-32 characters, with at least 1 uppercase, 1 lowercase, 1 number, and 1 (non-whistespace) special character. </p>
-                </ListItem> 
-                <ListItem>
-                    <TextField
-                        onChange={handlePasswordMatch}
-                        id="standard-password-match-input"
-                        label="Retype your password"
-                        type="password"
-                        autoComplete="current-passwordMatch"
-                    />
-                </ListItem>
-                <ListItem>
-                    <PhoneInput
-                        country="US"
-                        placeholder="Phone Number"
-                        onChange={handlePNum} />
-                </ListItem>
-                <ListItem>
-                    <p>Phone num </p>
-                </ListItem> 
-            </List>
-            <p style={{ color: 'red' }}>{error}</p>
-            <Button disabled={disableRegister} onClick={handleRegister}> Register Account </Button>
-        </Dialog>
-    );
+            <DialogTitle id="simple-dialog-title">Your account has been created!</DialogTitle>
+            <p>You must use the Google Authenticator app for iPhone or Android, or another multi-factor authentication app, to utilize MFA by scanning the QR code below</p>
+            <img src={otpURL}/>
+        </Dialog>)
+    } else {
+        return (
+            <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+                <DialogTitle id="simple-dialog-title">Create a new account:</DialogTitle>
+                <List>
+                    <ListItem>
+                        <TextField
+                            onChange={handleUsername}
+                            id="standard-username-input"
+                            label="Create Username"
+                            type="username"
+                            autoComplete="current-username"
+                        />
+                    </ListItem>
+                    <ListItem>
+                        <p>Username must be 4-16 characters, containing only letters and numbers </p>
+                    </ListItem> 
+                    <ListItem>
+                        <TextField
+                            onChange={handlePassword}
+                            id="standard-password-input"
+                            label="Create Password"
+                            type="password"
+                            autoComplete="current-password"
+                        />
+                    </ListItem>
+                    <ListItem>
+                        <p>Password must be 8-32 characters, with at least 1 uppercase, 1 lowercase, 1 number, and 1 (non-whistespace) special character. </p>
+                    </ListItem> 
+                    <ListItem>
+                        <TextField
+                            onChange={handlePasswordMatch}
+                            id="standard-password-match-input"
+                            label="Retype your password"
+                            type="password"
+                            autoComplete="current-passwordMatch"
+                        />
+                    </ListItem>
+                    <ListItem>
+                        <PhoneInput
+                            country="US"
+                            placeholder="Phone Number"
+                            onChange={handlePNum} />
+                    </ListItem>
+                    <ListItem>
+                        <p>Phone num </p>
+                    </ListItem> 
+                </List>
+                <p style={{ color: 'red' }}>{error}</p>
+                <Button disabled={disableRegister} onClick={handleRegister}> Register Account </Button>
+            </Dialog>
+        );
+    }
 }
 
 SimpleDialog.propTypes = {

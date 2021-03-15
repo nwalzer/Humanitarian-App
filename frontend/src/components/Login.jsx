@@ -39,25 +39,33 @@ function SimpleDialog(props) {
     const { onClose, selectedValue, open } = props;
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [otp, setOTP] = useState("");
     const [disableLogin, setDisableLogin] = useState(true);
     const [error, setError] = useState("");
 
     const handleUsername = (event) => {
         setUsername(event.target.value);
-        evalLogin(event.target.value, password);
+        evalLogin(event.target.value, password, otp);
     }
+
     const handlePassword = (event) => {
         setPassword(event.target.value);
-        evalLogin(username, event.target.value);
+        evalLogin(username, event.target.value, otp);
     }
+
+    const handleOTP = (event) => {
+        setOTP(event.target.value);
+        evalLogin(username, password, event.target.value);
+    }
+
     const handleClose = () => {
         onClose(selectedValue);
     };
 
-    const evalLogin = (uname, pword) => {
+    const evalLogin = (uname, pword, code) => {
         if(uname.length < 4 || uname.length > 16 || uname.replace(/[A-Za-z0-9]/g, "").length > 0){
             setDisableLogin(true);
-        } else if (pword.length === 0){
+        } else if (pword.length === 0 || code.length === 0){
             setDisableLogin(true);
         } else {
             setDisableLogin(false);
@@ -66,14 +74,13 @@ function SimpleDialog(props) {
 
     let history = useHistory();
 
-
     const handleLogin = () => {
-        var data = { username: username, pass: password };
+        var data = { username: username, pass: password, code: otp };
         //firebase.functions().useEmulator("localhost", 5001);
         var login = firebase.functions().httpsCallable('login');
         return login(data).then(res => {
             if (res.data.status == "FAILED" || res.data.status == "ERROR") {
-                setError("This username and password combination is not valid, please try again");
+                setError("This username and password combination is not valid, or you have not entered a correct MFA passcode, please try again");
                 return false;
             } else {
                 setError("");
@@ -111,6 +118,15 @@ function SimpleDialog(props) {
                         label="Password"
                         type="password"
                         autoComplete="current-password"
+                    />
+                </ListItem>
+                <ListItem>
+                    <TextField
+                        onChange={handleOTP}
+                        id="standard-otp-input"
+                        label="Multi-factor authentication"
+                        type="otp"
+                        autoComplete="current-otp"
                     />
                 </ListItem>
             </List>
