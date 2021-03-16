@@ -14,6 +14,7 @@ This web app utilizes a REACT frontend with a nodeJS and firebase backend. There
 - [Service account development](#Service-Account-Development)
 - [Protected REACT routes](#Protected-Routes)
 - [Data formatting](#Data-Formatting)
+- [Two-factor authentication](#2FA)
  
 ## Password Hashing
 In order to comply with general security recommendations, our user passwords are salted and hashed. We utilize the [bcrypt](https://www.npmjs.com/package/bcrypt) nodeJS module to handle password hashes and comparisons. There are several advantages to using the bcrypt module: 
@@ -45,7 +46,7 @@ When a user logs in, their username and password are sent to our server, which c
 Once a token has been generated and returned to the user, it is sent back to Firebase to authenticate the user. This authentication process stores the JWT in local session storage in the browser. When pages in our web app are loaded, we check the status of the Firebase Auth object, and if a user has data stored in the local storage they are considered 'logged in.' The Firebase Authentication object has the benefit of communicating this token to our database when querying, which is used by the access rules outlined in the next section.
  
 ## Firebase Security Rules
-For this web app we used Firebase's [Firestore database](https://firebase.google.com/docs/firestore/). Part of the functionality of Firestore is that anyone is able to query. To combat the glaring security issues associated with letting anyone query for any data, Firestore lets developers define access rules that can change who can access which data in which circumstances. These security rules are made more powerful by incorporating Firebase Authentication. As mentioned in the previous section, the Firebase Authentication object passes along our JWT to Firebase when we query Firestore. When Firestore is determining whether the query can be allowed through, we can use the JWT to understand who is querying and what permissions they have. For example, user profile information, such as username, password hash, and phone number, is set so that a user can only access a profile's information if the UID of the requester is the same as the UID of the information being requested. That is, a user can only query for data they own.
+For this web app we used Firebase's [Firestore database](https://firebase.google.com/docs/firestore/). Part of the functionality of Firestore is that anyone is able to query. To combat the glaring security issues associated with letting anyone query for any data, Firestore lets developers define access rules that can change who can access which data in which circumstances. These security rules are made more powerful by incorporating Firebase Authentication. As mentioned in the previous section, the Firebase Authentication object passes along our JWT to Firebase when we query Firestore. When Firestore is determining whether the query can be allowed through, we can use the JWT to understand who is querying and what permissions they have. For example, user profile information (username/password) is set so that a user can only access a profile's information if the UID of the requester is the same as the UID of the information being requested. That is, a user can only query for data they own.
  
 ![firestore-access-rules](/pictures/rules.PNG "Firestore Security Rules")
  
@@ -75,10 +76,6 @@ Data being written to firestore must first pass through our server, as no client
         - 1 number
         - 1 special character
     - Must not contain any spaces
-- Phone Numbers
-    - Exactly 12 characters long
-    - Must start with "+1" (U.S. phone number)
-    - Must only contain numbers, with the exception of the starting "+"
 - Review Author
     - Must be the username of an existing user
 - Review Content
@@ -86,3 +83,6 @@ Data being written to firestore must first pass through our server, as no client
     - Cannot contain inappropriate words
 - Review Rating
     - Must be a number 1-5
+
+## 2FA
+As part of the login process, user's must enter a valid six-digit code in addition to their username and password. This code is established via OAuth apps, such as Google Authenticator. During account registration, the server generates a unique 2FA secret value and stores it in the *userOTP* collection in Firestore, which is completely private. This secret value is used to generate a QR code that can be scanned by OAuth apps to generate six-digit codes. These codes are changed every 30 seconds automatically. Users must provide their username, password, and *current* six-digit code in order to log in. 
