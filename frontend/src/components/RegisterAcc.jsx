@@ -17,7 +17,6 @@ import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app';
 import 'firebase/functions';
 import Input from '@material-ui/core/Input'
-import PhoneInput from 'react-phone-number-input/input'
 
 const useStyles = makeStyles((theme) => ({
     avatar: {
@@ -37,7 +36,6 @@ function SimpleDialog(props) {
     const { onClose, selectedValue, open } = props;
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [phonenum, setPhoneNumber] = useState("");
     const [passwordMatch, setPasswordMatch] = useState("");
     const [otpURL, setOTPURL] = useState("");
     const [disableRegister, setRegister] = useState(true);
@@ -49,25 +47,20 @@ function SimpleDialog(props) {
 
     const handleUsername = (event) => {
         setUsername(event.target.value);
-        evalRegister(event.target.value, password, passwordMatch, phonenum);
+        evalRegister(event.target.value, password, passwordMatch);
     }
     const handlePassword = (event) => {
         setPassword(event.target.value);
-        evalRegister(username, event.target.value, passwordMatch, phonenum);
-    }
-
-    const handlePNum = (num) => {
-        setPhoneNumber(num);
-        evalRegister(username, password, passwordMatch, num);
+        evalRegister(username, event.target.value, passwordMatch);
     }
 
     const handlePasswordMatch = (event) => {
         setPasswordMatch(event.target.value);
-        evalRegister(username, password, event.target.value, phonenum);
+        evalRegister(username, password, event.target.value);
     }
 
     //Client-side input validation
-    const evalRegister = (uname, pword, pmatch, phone) => {
+    const evalRegister = (uname, pword, pmatch) => {
         if(uname.length < 4 || uname.length > 16 || uname.replace(/[A-Za-z0-9]/g, "").length > 0){
             setError("Please ensure your username is 4-16 alphanumeric characters long");
             setRegister(true);
@@ -82,9 +75,6 @@ function SimpleDialog(props) {
         } else if (pword != pmatch){
             setError("Please ensure your passwords match");
             setRegister(true);
-        } else if (phone.length != 12 || phone.charAt(0) != "+" || phone.charAt(1) != "1"){
-            setError("Please ensure your phone number is in in the form XXX-XXX-XXXX");
-            setRegister(true);
         } else {
             setError("");
             setRegister(false);
@@ -92,7 +82,7 @@ function SimpleDialog(props) {
     }
 
     const handleRegister = () => {
-        var data = { username: username, pass: password, phone: phonenum};
+        var data = { username: username, pass: password};
         //firebase.functions().useEmulator("localhost", 5001);
         var register = firebase.functions().httpsCallable('register');
         register(data).then(res => {
@@ -103,9 +93,6 @@ function SimpleDialog(props) {
                         break;
                     case "MALFORMED PASS":
                         setError("Please ensure your password is 8-32 characters long and contains 1 uppercase, 1 lowercase, 1 number, 1 special character, and no spaces");
-                        break;
-                    case "MALFORMED PHONE":
-                        setError("Please ensure your phone number is in in the form XXX-XXX-XXXX");
                         break;
                     case "USER EXISTS":
                         setError("Sorry, that username is already taken");
@@ -165,15 +152,6 @@ function SimpleDialog(props) {
                             autoComplete="current-passwordMatch"
                         />
                     </ListItem>
-                    <ListItem>
-                        <PhoneInput
-                            country="US"
-                            placeholder="Phone Number"
-                            onChange={handlePNum} />
-                    </ListItem>
-                    <ListItem>
-                        <p>Phone num </p>
-                    </ListItem> 
                 </List>
                 <p style={{ color: 'red' }}>{error}</p>
                 <Button disabled={disableRegister} onClick={handleRegister}> Register Account </Button>

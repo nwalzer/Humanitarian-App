@@ -1,15 +1,5 @@
 const Filter = require("bad-words");
 
-//Check if phone is in format +19876543210
-function validPhone(pnum){
-    let num = pnum.toString();
-    let res = num.length === 12;
-    res = res && num.charAt(0) === "+";
-    res = res && num.charAt(1) === "1";
-
-    return res;
-}
-
 //Check if username contains only alphanumeric characters
 function validUsername(uname){
     uname = uname.toString();
@@ -63,4 +53,4 @@ function validContent(content){
     return true;
 }
 
-module.exports = {validPhone, validUsername, validPass, validContent, validRating}
+module.exports = { validUsername, validPass, validContent, validRating}

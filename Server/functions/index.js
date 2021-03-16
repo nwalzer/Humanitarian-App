@@ -25,15 +25,13 @@ function sendFailure(error) {
 	return { "status": "ERROR", "error": error };
 }
 
-//expecting username, pass, phone
+//expecting username, pass
 exports.register = functions.https.onCall((data, context) => {
 	if(context.auth){
 		return {"status": "FAILED", "error": "USER LOGGED IN"}
 	}
 	
-	if(!sanitize.validPhone(data.phone)){
-		return { "status": "FAILED", "error": "MALFORMED PHONE" }; 
-	} else if(!sanitize.validUsername(data.username)){
+	if(!sanitize.validUsername(data.username)){
 		return { "status": "FAILED", "error": "MALFORMED UNAME" }; 
 	} else if(!sanitize.validPass(data.pass)){
 		return { "status": "FAILED", "error": "MALFORMED PASS" }; 
@@ -44,7 +42,7 @@ exports.register = functions.https.onCall((data, context) => {
 		} else {
 			return db.hashPassword(data.pass).then(function (hash) {
 				const newSecret = mfa.generateSecret(data.username);
-				return db.addNewUser(firestore, data.username, data.phone, hash, newSecret.secret).then(function (val) {
+				return db.addNewUser(firestore, data.username, hash, newSecret.secret).then(function (val) {
 					if (val === true) {
 						return { "status": "SUCCESS", "qr": newSecret.qr };
 					} else {
