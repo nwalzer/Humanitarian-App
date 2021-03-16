@@ -1,10 +1,20 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
+import { Router, withRouter } from 'react-router-dom'
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import Button from '@material-ui/core/Button';
+import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+
+const WhiteTextTypography = withStyles({
+    root: {
+        color: "#FFFFFF"
+    }
+})(Typography);
+
 
 class ProtectedRoute extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -25,13 +35,26 @@ class ProtectedRoute extends React.Component {
             });
         })
     }
-    
+
     handleLogout() {
         firebase.auth().signOut();
     }
     handleClick(e) {
-        this.handleLogout(); 
+        this.handleLogout();
     }
+
+    handleClickUserMap(e) {
+        this.props.history.push("/userhome");
+    }
+
+    handleClickHeatMap(e) {
+        this.props.history.push("/heatmap");
+    }
+
+    handleClickHome(e) {
+        this.props.history.push("/");
+    }
+
 
     render() {
 
@@ -43,7 +66,30 @@ class ProtectedRoute extends React.Component {
             }
 
             if (this.state && this.state.userStatus) {
-                return <Button color="primary" onClick = {this.handleClick.bind(this)}>Logout</Button>;
+                return (<div>
+                    <Button color="primary" onClick={this.handleClickHome.bind(this)}>
+                        <WhiteTextTypography noWrap> Home </WhiteTextTypography>
+                    </Button>
+                    <br />
+                    <Button color="primary" onClick={this.handleClickUserMap.bind(this)}>
+                        <WhiteTextTypography noWrap> Resources Lookup</WhiteTextTypography>
+                    </Button>
+                    <br />
+                    <Button color="primary" onClick={this.handleClickHeatMap.bind(this)}>
+                        <WhiteTextTypography noWrap> Resource Heatmap </WhiteTextTypography>
+                    </Button>
+                    <br />
+                    <Button color="primary" onClick={this.handleClick.bind(this)}>
+                        <WhiteTextTypography noWrap> Logout </WhiteTextTypography>
+                    </Button>
+
+
+
+                </div>
+
+
+
+                );
             }
             else if (!(this.state && this.state.userStatus)) {
                 return <div></div>;
@@ -58,7 +104,7 @@ class ProtectedRoute extends React.Component {
     }
 }
 
-export default ProtectedRoute;
+export default withRouter(ProtectedRoute);
 
 
 

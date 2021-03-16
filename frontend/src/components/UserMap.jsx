@@ -70,6 +70,8 @@ export default function UserMap() {
     }
   });
 
+
+
   useEffect(() => {
     if (dbData) {
       // you will get updated finalData here, each time it changes
@@ -89,7 +91,7 @@ export default function UserMap() {
   useEffect(() => {
 
     if (user && dbData) {
-      const map = new mapboxgl.Map({
+     const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v10',
         center: [lng, lat],
@@ -119,7 +121,6 @@ export default function UserMap() {
       });
 
 
-
       map.on('load', function () {
         map.addSource('resources', {
           type: 'geojson',
@@ -130,22 +131,36 @@ export default function UserMap() {
           "type": "circle",
           "source": 'resources'
         });
-
       }
       );
+      document.getElementById('fly').addEventListener('click', function () {
+        // Fly to a random location by offsetting the point -74.50, 40
+        // by up to 5 degrees.
+        map.flyTo({
+          center: [
+            -74.5 + (Math.random() - 0.5) * 10,
+            40 + (Math.random() - 0.5) * 10
+          ],
+          essential: true // this animation is considered essential with respect to prefers-reduced-motion
+        });
+      });
+
       return () => map.remove();
     }
     else return <div>Loading</div>
   }, [user, dbData]);
 
+  
+
 
   return <div>
-    <div class='sidebar'>
+    <div class='sidebar-user'>
       <div class='heading'>
         <h1>Our locations</h1>
       </div>
+      <button id="fly">Fly</button>
     </div>
-    <div className="map-container" ref={mapContainer} />
+    <div className="map-container-user" ref={mapContainer} />
   </div>
 
 }

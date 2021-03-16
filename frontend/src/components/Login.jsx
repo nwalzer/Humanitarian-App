@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
@@ -18,12 +18,18 @@ import firebase from 'firebase/app';
 import 'firebase/functions';
 import 'firebase/auth';
 
-import { useHistory  } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+
+const WhiteTextTypography = withStyles({
+    root: {
+        color: "#FFFFFF"
+    }
+})(Typography);
 
 const useStyles = makeStyles((theme) => ({
     avatar: {
-        backgroundColor: blue[100],
-        color: blue[600],
+        backgroundColor: blue[50],
+        color: blue[50],
     },
     root: {
         '& .MuiTextField-root': {
@@ -55,9 +61,9 @@ function SimpleDialog(props) {
     };
 
     const evalLogin = (uname, pword) => {
-        if(uname.length < 4 || uname.length > 16 || uname.replace(/[A-Za-z0-9]/g, "").length > 0){
+        if (uname.length < 4 || uname.length > 16 || uname.replace(/[A-Za-z0-9]/g, "").length > 0) {
             setDisableLogin(true);
-        } else if (pword.length === 0){
+        } else if (pword.length === 0) {
             setDisableLogin(true);
         } else {
             setDisableLogin(false);
@@ -81,7 +87,7 @@ function SimpleDialog(props) {
                 console.log(res.data.TOK);
                 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
                 return firebase.auth().signInWithCustomToken(res.data.TOK).then(userCred => {
-                    console.log("Redirecting"); 
+                    console.log("Redirecting");
                     history.push('/userhome')
                     return true;
                     //transition to new screen
@@ -132,6 +138,7 @@ export default function Login() {
     const [open, setOpen] = React.useState(false);
     const [user, setUser] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState();
+    let history = useHistory();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -149,6 +156,15 @@ export default function Login() {
             setUser(false);
         }
     });
+    const handleClickHome = () => {
+        setOpen(false);
+        history.push('/');
+
+    };
+    const handleClickHeat = () => {
+        setOpen(false);
+        history.push('/heatmap');
+    };
 
     if (user) {
         return <div></div>;
@@ -156,9 +172,18 @@ export default function Login() {
     else {
         return (
             <div>
-                <Button color="primary" onClick={handleClickOpen}>
-                    Login
-                    </Button>
+                <Button color="primary" onClick={handleClickHome}>
+                    <WhiteTextTypography noWrap> Home </WhiteTextTypography>
+                </Button>
+                <br />
+                <Button color="primary" onClick={handleClickHeat}>
+                    <WhiteTextTypography noWrap> Resource Heatmap </WhiteTextTypography>
+                </Button>
+                <br />
+                <Button color="default" onClick={handleClickOpen}>
+                    <WhiteTextTypography noWrap> Login </WhiteTextTypography>
+                </Button>
+
                 <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
 
 
