@@ -42,7 +42,7 @@ export default function Review(props) {
                 rowsMax={4}
                 onChange={updateCC}
                 />
-            <p style={{ color: characters < 0 ? "red" : "black" }}>Remaining characters: {characters} / 300</p>
+            <p style={{ color: characters < 0 ? "red" : "white" }}>Remaining characters: {characters} / 300</p>
             <p>Please rate your experience</p>
             <Rating
                 name="simple-controlled"

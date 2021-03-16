@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ResourceList from './ResourceList';
+import Button from '@material-ui/core/Button';
 
 import config from '../assets/mapbox.json'
 import mapboxgl from 'mapbox-gl';
@@ -25,6 +27,7 @@ export default function UserMap() {
   const [lng, setLng] = useState(-70.9);
   const [lat, setLat] = useState(42.35);
   const [zoom, setZoom] = useState(9);
+  const [mapObj, setMapObj] = useState();
 
   const [user, setUser] = useState(false);
   const [dbData, setDBData] = useState({});
@@ -150,8 +153,16 @@ export default function UserMap() {
     else return <div>Loading</div>
   }, [user, dbData]);
 
-  
-
+  const handleFly = () => {
+    console.log("FLYING");
+    mapObj.flyTo({
+      center: [
+        -74.5 + (Math.random() - 0.5) * 10,
+        40 + (Math.random() - 0.5) * 10
+      ],
+      essential: true // this animation is considered essential with respect to prefers-reduced-motion
+    });
+  }
 
   return <div>
     <div class='sidebar-user'>
@@ -159,6 +170,8 @@ export default function UserMap() {
         <h1>Our locations</h1>
       </div>
       <button id="fly">Fly</button>
+      <ResourceList />
+      <Button onclick={handleFly}>CLICK HERE FOR TEST</Button>
     </div>
     <div className="map-container-user" ref={mapContainer} />
   </div>

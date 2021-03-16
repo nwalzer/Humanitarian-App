@@ -57,44 +57,36 @@ class ProtectedRoute extends React.Component {
 
 
     render() {
-
-        console.log("My State: ", this.state);
         if (this.state != null) {
-
             if (this.state.userStatus == null) {
                 return <div></div>;
-            }
-
-            if (this.state && this.state.userStatus) {
-                return (<div>
-                    <Button color="primary" onClick={this.handleClickHome.bind(this)}>
-                        <WhiteTextTypography noWrap> Home </WhiteTextTypography>
-                    </Button>
-                    <br />
-                    <Button color="primary" onClick={this.handleClickUserMap.bind(this)}>
-                        <WhiteTextTypography noWrap> Resources Lookup</WhiteTextTypography>
-                    </Button>
-                    <br />
-                    <Button color="primary" onClick={this.handleClickHeatMap.bind(this)}>
-                        <WhiteTextTypography noWrap> Resource Heatmap </WhiteTextTypography>
-                    </Button>
-                    <br />
-                    <Button color="primary" onClick={this.handleClick.bind(this)}>
-                        <WhiteTextTypography noWrap> Logout </WhiteTextTypography>
-                    </Button>
-
-
-
-                </div>
+            } else if (this.state.userStatus) {
+                return (
+                    <div>
+                        <Button color="primary" onClick={this.handleClickHome.bind(this)}>
+                            <WhiteTextTypography noWrap> Home </WhiteTextTypography>
+                        </Button>
+                        <br />
+                        <Button color="primary" onClick={this.handleClickUserMap.bind(this)}>
+                            <WhiteTextTypography noWrap> Resources Lookup</WhiteTextTypography>
+                        </Button>
+                        <br />
+                        <Button color="primary" onClick={this.handleClickHeatMap.bind(this)}>
+                            <WhiteTextTypography noWrap> Resource Heatmap </WhiteTextTypography>
+                        </Button>
+                        <br />
+                        <Button color="primary" onClick={this.handleClick.bind(this)}>
+                            <WhiteTextTypography noWrap> Logout </WhiteTextTypography>
+                        </Button>
 
 
 
+                    </div>
                 );
             }
-            else if (!(this.state && this.state.userStatus)) {
+            else {
                 return <div></div>;
             }
-
         }
         else {
             return <div></div>;
