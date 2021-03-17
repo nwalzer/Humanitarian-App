@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
@@ -17,6 +17,12 @@ import TextField from '@material-ui/core/TextField';
 import firebase from 'firebase/app';
 import 'firebase/functions';
 import Input from '@material-ui/core/Input'
+
+const WhiteTextTypography = withStyles({
+    root: {
+      color: "#FFFFFF"
+    }
+  })(Typography);
 
 const useStyles = makeStyles((theme) => ({
     avatar: {
@@ -195,7 +201,7 @@ export default function Register() {
         return (
             <div>
                 <Button color="primary" onClick={handleClickOpen}>
-                    Register Account
+                <WhiteTextTypography noWrap> Register Account </WhiteTextTypography>
                     </Button>
                 <SimpleDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
 
