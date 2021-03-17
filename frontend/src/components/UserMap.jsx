@@ -121,8 +121,6 @@ export default function UserMap() {
     if (mapObj) {
       var popUps = document.getElementsByClassName('mapboxgl-popup');
       /** Check if there is already a popup on the map and if so, remove it */
-      
-      flyToDot(currentFeature);
 
       if (popUps[0]) popUps[0].remove();
 
@@ -233,7 +231,7 @@ export default function UserMap() {
 
 
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (dbData) {
       // you will get updated finalData here, each time it changes
       console.log("Updated Data");
@@ -246,7 +244,7 @@ export default function UserMap() {
       console.log("Updated User");
     }
     // you can trigger your function from here
-  }, [user]);
+  }, [user]); */
 
 
   useEffect(() => {
@@ -303,8 +301,7 @@ export default function UserMap() {
         /* If yes, then: */
         if (features.length) {
           var clickedPoint = features[0];
-
-          console.log(clickedPoint.properties.uid);
+          
           flyToDot(clickedPoint);
           createPopUp2(clickedPoint);
 

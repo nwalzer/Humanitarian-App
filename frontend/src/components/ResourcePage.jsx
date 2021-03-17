@@ -63,7 +63,6 @@ export default function ResourcePage(props) {
   const loadResources = () => {
     firebase.firestore().collection("resources").doc(props.pathID).get().then((doc) => {
       if (doc.exists) {
-        console.log("Document data:", doc.data());
         setResourceInfo(doc.data());
         setLoadedResource(true);
       } else {
@@ -74,7 +73,6 @@ export default function ResourcePage(props) {
 
   const loadReviews = () => {
     firebase.firestore().collection("reviews").where('locID', '==', props.pathID).get().then((val) => {
-      console.log(val);
       if (!val.empty) {
         let tempList = [];
         val.forEach(doc => {
