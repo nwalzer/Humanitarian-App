@@ -350,7 +350,7 @@ export default function UserMap() {
     return <div>
       <div class='sidebar-user'>
         <div class='heading'>
-          <h1>Our locations</h1>
+          <h1>Loading</h1>
         </div>
       </div>
       <div className="map-container-user" ref={mapContainer} />

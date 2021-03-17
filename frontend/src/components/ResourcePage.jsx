@@ -1,10 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, withRouter, useHistory } from "react-router-dom";
+import { List, ListItem, ListItemText, ListItemIcon, Dialog, DialogTitle, DialogContent, DialogContentText, Button } from '@material-ui/core';
+import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
+const WhiteTextTypography = withStyles({
+  root: {
+    color: "#FFFFFF"
+  }
+})(Typography);
 
 export default function ResourcePage(props) {
 
@@ -13,6 +21,10 @@ export default function ResourcePage(props) {
     const [loadedReviews, setLoadedReviews] = useState(false);
     const [reviewList, setReviewList] = useState([]);
     let history = useHistory();
+
+    const handleReview = () => {
+      history.push('/review/' + props.pathID);
+    }
 
     const loadResources = () => {
         firebase.firestore().collection("resources").where(firebase.firestore.FieldPath.documentId(), '==', props.pathID).get().then((val) => {
@@ -60,7 +72,10 @@ useEffect(() => {
 
 
 return (
-    <div> </div>
+    <div> 
+      <Button onClick={handleReview}> <WhiteTextTypography noWrap> Leave a Review </WhiteTextTypography> </Button>
+
+    </div>
 ); 
 
 }
