@@ -4,6 +4,7 @@
     width: 75%;
     top: 0;
     bottom: 0;
+    margin-top: 75px;
  }
 
   .sidebar-user {
@@ -13,6 +14,70 @@
     top: 0;
     left: 0;
     overflow: hidden;
+    margin-top: 75px;
     border-right: 1px solid rgba(0, 0, 0, 0.25);
   }
 
+  .geocoder {
+    position: absolute;
+    z-index: 1;
+    width: 50%;
+    left: 50%;
+    margin-left: -25%;
+    top: 10px;
+    }
+    .mapboxgl-ctrl-geocoder {
+    min-width: 100%;
+    } 
+
+
+    /* Marker tweaks */
+.mapboxgl-popup-close-button {
+  display: none;
+}
+
+.mapboxgl-popup-content {
+  font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+  padding: 0;
+  width: 180px;
+}
+
+.mapboxgl-popup-content-wrapper {
+  padding: 1%;
+}
+
+.mapboxgl-popup-content h3 {
+  background: #ac2b37;
+  color: #fff;
+  margin: 0;
+  display: block;
+  padding: 10px;
+  border-radius: 3px 3px 0 0;
+  font-weight: 700;
+  margin-top: -15px;
+}
+
+.mapboxgl-popup-content h4 {
+  margin: 0;
+  display: block;
+  padding: 10px;
+  font-weight: 400;
+  color: white; 
+  background-color: #ac2b37;
+}
+
+.mapboxgl-popup-content div {
+  padding: 10px;
+}
+
+.mapboxgl-container .leaflet-marker-icon {
+  cursor: pointer;
+}
+
+.mapboxgl-popup-anchor-top > .mapboxgl-popup-content {
+  margin-top: 15px;
+}
+
+.mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
+  border-bottom-color: #91c949;
+}

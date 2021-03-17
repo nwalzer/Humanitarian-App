@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, withRouter } from 'react-router-dom';
 import { List, ListItem, ListItemText, ListItemIcon, Dialog, DialogTitle, DialogContent, DialogContentText, Button } from '@material-ui/core';
 import StarIcon from '@material-ui/icons/Star';
 import PropTypes from 'prop-types';
@@ -66,6 +66,7 @@ const listIconStyle = {
 export default function UserMap() {
 
   const mapContainer = useRef();
+  const buttonRef = useRef();
   const [lng, setLng] = useState(-70.9);
   const [lat, setLat] = useState(42.35);
   const [zoom, setZoom] = useState(9);
@@ -78,6 +79,65 @@ export default function UserMap() {
   const [user, setUser] = useState(false);
   const [dbData, setDBData] = useState({});
 
+  let history = useHistory();
+
+
+
+  function createPopUp(currentFeature) {
+
+    const handleClick = () => {
+      console.log("switching pages");
+      history.push({ pathname: '/resource/' + currentFeature.uid })
+    }
+
+
+    if (mapObj) {
+      var popUps = document.getElementsByClassName('mapboxgl-popup');
+      /** Check if there is already a popup on the map and if so, remove it */
+      if (popUps[0]) popUps[0].remove();
+
+      var coordinates = new mapboxgl.LngLat(currentFeature.Lng, currentFeature.Lat);
+      var description = '<h3>' + currentFeature.Name + '</h3>' + '<h4>' + currentFeature.Address + '</h4>' + `
+      <button class="btn" ref=${buttonRef.current}>See More</button>`;
+
+
+      var popup = new mapboxgl.Popup({ closeOnClick: false })
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(mapObj);
+      const btn = document.getElementsByClassName("btn")[0];
+      btn.addEventListener("click", handleClick);
+    }
+  };
+
+  function createPopUp2(currentFeature) {
+
+    const handleClick = () => {
+      console.log("switching pages");
+      history.push({ pathname: '/resource/' + currentFeature.uid })
+    }
+
+
+    if (mapObj) {
+      var popUps = document.getElementsByClassName('mapboxgl-popup');
+      /** Check if there is already a popup on the map and if so, remove it */
+      if (popUps[0]) popUps[0].remove();
+
+      var description = '<h3>' + currentFeature.properties.Name + '</h3>' + '<h4>' + currentFeature.properties.Address + '</h4>' + `
+      <button class="btn" ref=${buttonRef.current}>See More</button>`;
+
+
+      var popup = new mapboxgl.Popup({ closeOnClick: false })
+        .setLngLat(currentFeature.geometry.coordinates)
+        .setHTML(description)
+        .addTo(mapObj);
+      const btn = document.getElementsByClassName("btn")[0];
+      btn.addEventListener("click", handleClick);
+    }
+  };
+
+
+
   const handleClick = (doc) => {
     //setOpen(true);
     //setSelectedData(doc);
@@ -86,6 +146,20 @@ export default function UserMap() {
         center: [
           doc.Lng,
           doc.Lat
+        ],
+        essential: true,
+      });
+      createPopUp(doc);
+    }
+
+  }; 
+
+  const flyToDot = (currentFeature) => {
+    if (mapObj) {
+      mapObj.flyTo({
+        center: [
+          currentFeature.geometry.coordinates[0],
+          currentFeature.geometry.coordinates[1]
         ],
         essential: true
       });
@@ -218,6 +292,29 @@ export default function UserMap() {
       }
       );
 
+      map.on('click', function (e) {
+        var features = map.queryRenderedFeatures(e.point, {
+          layers: ['resources']
+        });
+
+        /* If yes, then: */
+        if (features.length) {
+          var clickedPoint = features[0];
+
+          console.log(clickedPoint.properties.uid);
+          flyToDot(clickedPoint);
+          createPopUp2(clickedPoint);
+
+          /* Highlight listing in sidebar (and remove highlight for all other listings) */
+          var activeItem = document.getElementsByClassName('active');
+
+          if (activeItem[0]) {
+            activeItem[0].classList.remove('active');
+          }
+        }
+
+      });
+
       setMapObj(map);
 
       return () => map.remove();
@@ -242,9 +339,6 @@ export default function UserMap() {
 
     return <div>
       <div class='sidebar-user'>
-        <div class='heading'>
-          <h1>Our locations</h1>
-        </div>
         <List style={listStyle}>
           {listItems}
         </List>
@@ -264,6 +358,7 @@ export default function UserMap() {
   }
 
 }
+
 
 function SimpleDialog(props) {
   const { onClose, open, docInfo } = props;

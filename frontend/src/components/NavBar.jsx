@@ -26,6 +26,7 @@ import {BrowserRouter as Router, Route, Switch, useHistory} from "react-router-d
 import UserMap from './UserMap';
 import Review from './Review';
 import ProtectedRoute from "./ProtectedRoute.jsx"; 
+import ResourcePage from "./ResourcePage.jsx"; 
 
 const drawerWidth = 300;
 const WhiteTextTypography = withStyles({
@@ -166,6 +167,7 @@ export default function PersistentDrawerLeft() {
           <Route exact path="/"><Landing /></Route>
           <Route exact path="/heatmap"><Heatmap /></Route>
           <ProtectedRoute path="/userhome" component={UserMap}/>
+          <ProtectedRoute path="/resource/:id" component={ResourcePage}/>
           <ProtectedRoute path="/review/:id" component={Review}/>
         </Switch>
         
