@@ -1,6 +1,7 @@
 import React from 'react';
 import { Rating, ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import { Button, TextField } from '@material-ui/core';
+import { useHistory } from "react-router-dom";
 import firebase from 'firebase/app';
 import 'firebase/functions';
 import 'firebase/auth';
@@ -12,6 +13,8 @@ export default function Review(props) {
     const [rating, setRating] = React.useState(1);
     const [content, setContent] = React.useState("");
     const [anon, setAnon] = React.useState("No");
+    const [errorText, setErrorText] = React.useState("");
+    let history = useHistory();
 
     const updateCC = (event) => {
         let numChars = event.target.value.length;
@@ -28,7 +31,11 @@ export default function Review(props) {
         //firebase.functions().useEmulator("localhost", 5001);
         var review = firebase.functions().httpsCallable('review');
         return review(data).then((val) => {
-            console.log(val);
+            if(val.data.status === "SUCCESS"){
+                history.push('/userhome');
+            } else {
+                setErrorText(val.data.error);
+            }
         })
     }
 
@@ -51,7 +58,7 @@ export default function Review(props) {
                     setRating(newValue);
                 }}
                 />
-            <p>Write review anonymously?</p>
+            <p>Write review anonymously?*</p>
             <ToggleButtonGroup
                 value={anon}
                 exclusive
@@ -65,7 +72,9 @@ export default function Review(props) {
                     No
                 </ToggleButton>
             </ToggleButtonGroup>
+            <p style={{color: "red"}}>{errorText}</p>
             <Button disabled={characters < 0 ? true : false} onClick={handleSubmit}>Submit Review</Button>
+            <p>* Choosing to write a review anonymously will display "Anonymous" as the author when the review is displayed. We still keep track of which users write which reviews regardless of anonymous status</p>
         </div>
     )
 }

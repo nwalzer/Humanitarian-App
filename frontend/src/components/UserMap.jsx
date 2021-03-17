@@ -87,7 +87,7 @@ export default function UserMap() {
 
     const handleClick = () => {
       console.log("switching pages");
-      history.push({ pathname: '/resource/' + currentFeature.uid })
+      history.push('/resource/' + currentFeature.uid);
     }
 
 
@@ -114,13 +114,16 @@ export default function UserMap() {
 
     const handleClick = () => {
       console.log("switching pages");
-      history.push({ pathname: '/resource/' + currentFeature.uid })
+      history.push('/resource/' + currentFeature.properties.uid);
     }
 
 
     if (mapObj) {
       var popUps = document.getElementsByClassName('mapboxgl-popup');
       /** Check if there is already a popup on the map and if so, remove it */
+      
+      flyToDot(currentFeature);
+
       if (popUps[0]) popUps[0].remove();
 
       var description = '<h3>' + currentFeature.properties.Name + '</h3>' + '<h4>' + currentFeature.properties.Address + '</h4>' + `
@@ -194,29 +197,29 @@ export default function UserMap() {
             "Lng": thisData.Longitude,
             "Lat": thisData.Latitude
           }
-          resData.push(resInfo);
+        resData.push(resInfo);
 
-          let tempInfo = {
-            "type": "Feature",
-            "properties": {
-              "uid": doc.id,
-              "Address": thisData.Address,
-              "City": thisData.City,
-              "Description": thisData.Description,
-              "Email": thisData.Email,
-              "Name": thisData.Name,
-              "Phone": thisData.Phone,
-              "Website": thisData.Website
-            },
-            "geometry": {
-              "type": "Point",
-              "coordinates": [
-                thisData.Longitude,
-                thisData.Latitude
-              ]
-            }
+        let tempInfo = {
+          "type": "Feature",
+          "properties": {
+            "uid": doc.id,
+            "Address": thisData.Address,
+            "City": thisData.City,
+            "Description": thisData.Description,
+            "Email": thisData.Email,
+            "Name": thisData.Name,
+            "Phone": thisData.Phone,
+            "Website": thisData.Website
+          },
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              thisData.Longitude,
+              thisData.Latitude
+            ]
           }
-          data.features.push(tempInfo);
+        }
+        data.features.push(tempInfo);
         })
 
         setDBData(data);
