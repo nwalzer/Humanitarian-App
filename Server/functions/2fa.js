@@ -7,7 +7,7 @@ function generateSecret(uname){
 
 function verifyToken(secret, token){
     const res = twofactor.verifyToken(secret, token);
-    if(res && res.delta == 0){
+    if(res && res.delta === 0){
         return true;
     } else {
         return false;

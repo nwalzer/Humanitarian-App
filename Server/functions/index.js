@@ -8,7 +8,6 @@
 
 const functions = require('firebase-functions');
 const firebase = require('firebase-admin');
-const bodyParser = require('body-parser');
 const db = require('./db');
 const sanitize = require('./sanitize');
 const mfa = require('./2fa');

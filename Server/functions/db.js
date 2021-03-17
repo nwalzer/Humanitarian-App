@@ -53,6 +53,8 @@ function compareHash(db, user, pword) {
       return "";
     } else if(bcrypt.compare(String(pword), String(results[0]))){
       return results[1];
+    } else {
+      return "";
     }
   }).catch(function (error) {
     console.log(error);
