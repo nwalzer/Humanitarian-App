@@ -108,7 +108,7 @@ export default function ResourcePage(props) {
 
   return (
     <div>
-
+      <WhiteTextTypography noWrap>{resourceInfo.Name}</WhiteTextTypography>
       <WhiteTextTypography noWrap> Address: {resourceInfo.Address}, {resourceInfo.City} </WhiteTextTypography>
       <WhiteTextTypography noWrap> Email: {resourceInfo.Email}, Phone: {resourceInfo.Phone}, Website: {resourceInfo.Website} </WhiteTextTypography>
       <WhiteTextTypography> {resourceInfo.Description} </WhiteTextTypography>

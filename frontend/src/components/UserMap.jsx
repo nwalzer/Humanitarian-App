@@ -98,50 +98,19 @@ export default function UserMap() {
 
       var coordinates = new mapboxgl.LngLat(currentFeature.Lng, currentFeature.Lat);
       var description = '<h3>' + currentFeature.Name + '</h3>' + '<h4>' + currentFeature.Address + '</h4>' + `
-      <button class="btn" ref=${buttonRef.current}>See More</button>`;
+      <button id=${currentFeature.uid} ref=${buttonRef.current}>See More</button>`;
 
 
-      var popup = new mapboxgl.Popup({ closeOnClick: false })
+      var popup = new mapboxgl.Popup()
         .setLngLat(coordinates)
         .setHTML(description)
         .addTo(mapObj);
-      const btn = document.getElementsByClassName("btn")[0];
+      const btn = document.getElementById(currentFeature.uid);
       btn.addEventListener("click", handleClick);
     }
   };
-
-  function createPopUp2(currentFeature) {
-
-    const handleClick = () => {
-      console.log("switching pages");
-      history.push('/resource/' + currentFeature.properties.uid);
-    }
-
-
-    if (mapObj) {
-      var popUps = document.getElementsByClassName('mapboxgl-popup');
-      /** Check if there is already a popup on the map and if so, remove it */
-
-      if (popUps[0]) popUps[0].remove();
-
-      var description = '<h3>' + currentFeature.properties.Name + '</h3>' + '<h4>' + currentFeature.properties.Address + '</h4>' + `
-      <button class="btn" ref=${buttonRef.current}>See More</button>`;
-
-
-      var popup = new mapboxgl.Popup({ closeOnClick: false })
-        .setLngLat(currentFeature.geometry.coordinates)
-        .setHTML(description)
-        .addTo(mapObj);
-      const btn = document.getElementsByClassName("btn")[0];
-      btn.addEventListener("click", handleClick);
-    }
-  };
-
-
 
   const handleClick = (doc) => {
-    //setOpen(true);
-    //setSelectedData(doc);
     if (mapObj) {
       mapObj.flyTo({
         center: [
@@ -153,19 +122,7 @@ export default function UserMap() {
       createPopUp(doc);
     }
 
-  }; 
-
-  const flyToDot = (currentFeature) => {
-    if (mapObj) {
-      mapObj.flyTo({
-        center: [
-          currentFeature.geometry.coordinates[0],
-          currentFeature.geometry.coordinates[1]
-        ],
-        essential: true
-      });
-    }
-  }
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -195,29 +152,20 @@ export default function UserMap() {
             "Lng": thisData.Longitude,
             "Lat": thisData.Latitude
           }
-        resData.push(resInfo);
+          resData.push(resInfo);
 
-        let tempInfo = {
-          "type": "Feature",
-          "properties": {
-            "uid": doc.id,
-            "Address": thisData.Address,
-            "City": thisData.City,
-            "Description": thisData.Description,
-            "Email": thisData.Email,
-            "Name": thisData.Name,
-            "Phone": thisData.Phone,
-            "Website": thisData.Website
-          },
-          "geometry": {
-            "type": "Point",
-            "coordinates": [
-              thisData.Longitude,
-              thisData.Latitude
-            ]
+          let tempInfo = {
+            "type": "Feature",
+            "properties": resInfo,
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                thisData.Longitude,
+                thisData.Latitude
+              ]
+            }
           }
-        }
-        data.features.push(tempInfo);
+          data.features.push(tempInfo);
         })
 
         setDBData(data);
@@ -230,23 +178,6 @@ export default function UserMap() {
   });
 
 
-
-  /* useEffect(() => {
-    if (dbData) {
-      // you will get updated finalData here, each time it changes
-      console.log("Updated Data");
-    }
-  }, [dbData]);
-
-  useEffect(() => {
-    if (user) {
-      // you will get updated finalData here, each time it changes
-      console.log("Updated User");
-    }
-    // you can trigger your function from here
-  }, [user]); */
-
-
   useEffect(() => {
 
     if (user && dbData) {
@@ -256,27 +187,6 @@ export default function UserMap() {
         center: [lng, lat],
         zoom: zoom,
         accessToken: MAPBOX_TOKEN
-      });
-      map.addControl(
-        new MapboxGeocoder({
-          accessToken: MAPBOX_TOKEN,
-          mapboxgl: mapboxgl
-        })
-      );
-
-      map.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true
-          },
-          trackUserLocation: true
-        })
-      );
-
-      map.on('move', () => {
-        setLng(map.getCenter().lng.toFixed(4));
-        setLat(map.getCenter().lat.toFixed(4));
-        setZoom(map.getZoom().toFixed(2));
       });
 
 
@@ -290,30 +200,59 @@ export default function UserMap() {
           "type": "circle",
           "source": 'resources'
         });
-      }
-      );
 
-      map.on('click', function (e) {
-        var features = map.queryRenderedFeatures(e.point, {
-          layers: ['resources']
+        map.addControl(
+          new MapboxGeocoder({
+            accessToken: MAPBOX_TOKEN,
+            mapboxgl: mapboxgl
+          })
+        );
+
+        map.addControl(
+          new mapboxgl.GeolocateControl({
+            positionOptions: {
+              enableHighAccuracy: true
+            },
+            trackUserLocation: true
+          })
+        );
+
+        map.on('move', () => {
+          setLng(map.getCenter().lng.toFixed(4));
+          setLat(map.getCenter().lat.toFixed(4));
+          setZoom(map.getZoom().toFixed(2));
         });
 
-        /* If yes, then: */
-        if (features.length) {
-          var clickedPoint = features[0];
-          
-          flyToDot(clickedPoint);
-          createPopUp2(clickedPoint);
+        map.on('click', 'resources', function (e) {
 
-          /* Highlight listing in sidebar (and remove highlight for all other listings) */
-          var activeItem = document.getElementsByClassName('active');
+          var clickedPoint = e.features[0];
+          var description = '<h3>' + clickedPoint.properties.Name + '</h3>' + '<h4>' + clickedPoint.properties.Address + '</h4>' + 
+            `<button id=${clickedPoint.properties.uid} ref=${buttonRef.current}>See More</button>`;
 
-          if (activeItem[0]) {
-            activeItem[0].classList.remove('active');
+          new mapboxgl.Popup()
+          .setLngLat({lng: clickedPoint.geometry.coordinates[0], lat: clickedPoint.geometry.coordinates[1]})
+          .setHTML(description)
+          .addTo(map);
+
+          const handleRes = () => {
+            console.log("switching pages");
+            history.push('/resource/' + clickedPoint.properties.uid);
           }
-        }
 
-      });
+          const btn = document.getElementById(clickedPoint.properties.uid);
+          btn.addEventListener("click", handleRes);
+          
+          map.flyTo({
+            center: [
+              clickedPoint.geometry.coordinates[0],
+              clickedPoint.geometry.coordinates[1]
+            ],
+            essential: true
+          });
+
+        });
+      }
+      );
 
       setMapObj(map);
 
