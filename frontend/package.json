@@ -21,7 +21,8 @@
     "react-tableau-report": "^1.0.4",
     "tableau-api": "^2.2.3",
     "web-vitals": "^1.1.0",
-    "worker-loader": "^3.0.8"
+    "worker-loader": "^3.0.8",
+    "zxcvbn": "^4.4.2"
   },
   "scripts": {
     "start": "react-scripts start",

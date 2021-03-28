@@ -5,18 +5,14 @@ import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import PersonIcon from '@material-ui/icons/Person';
-import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import { blue } from '@material-ui/core/colors';
 import TextField from '@material-ui/core/TextField';
+import StrengthMeter from './StrengthMeter';
 import firebase from 'firebase/app';
 import 'firebase/functions';
-import Input from '@material-ui/core/Input'
 
 const WhiteTextTypography = withStyles({
     root: {
@@ -70,14 +66,9 @@ function SimpleDialog(props) {
         if(uname.length < 4 || uname.length > 16 || uname.replace(/[A-Za-z0-9]/g, "").length > 0){
             setError("Please ensure your username is 4-16 alphanumeric characters long");
             setRegister(true);
-        } else if (pword.length < 8 || pword.length > 32){
-            setError("Please ensure your password is 8-32 characters long");
+        } else if (pword.length < 8 || pword.length > 64){
+            setError("Please ensure your password is 8-64 characters long");
             setRegister(true);
-        } else if (!pword.match(/[A-Z]/) || !pword.match(/[a-z]/) 
-            || !pword.match(/[0-9]/) || pword.replace(/[A-Za-z0-9]/g, "").length == 0 
-            || pword.replace(/\s+/, "").length != pword.length){
-                setError("Please ensure your password contains 1 uppercase, 1 lowercase, 1 number, 1 special character, and no spaces");
-                setRegister(true);
         } else if (pword != pmatch){
             setError("Please ensure your passwords match");
             setRegister(true);
@@ -98,7 +89,7 @@ function SimpleDialog(props) {
                         setError("Please ensure your username is 4-16 alphanumeric characters long");
                         break;
                     case "MALFORMED PASS":
-                        setError("Please ensure your password is 8-32 characters long and contains 1 uppercase, 1 lowercase, 1 number, 1 special character, and no spaces");
+                        setError("Please ensure your password is 8-64 characters long");
                         break;
                     case "USER EXISTS":
                         setError("Sorry, that username is already taken");
@@ -147,8 +138,11 @@ function SimpleDialog(props) {
                         />
                     </ListItem>
                     <ListItem>
-                        <p>Password must be 8-32 characters, with at least 1 uppercase, 1 lowercase, 1 number, and 1 (non-whistespace) special character. </p>
+                        <p>Password must be 8-64 characters</p>
                     </ListItem> 
+                    <ListItem>
+                        <StrengthMeter password={password}/>
+                    </ListItem>
                     <ListItem>
                         <TextField
                             onChange={handlePasswordMatch}

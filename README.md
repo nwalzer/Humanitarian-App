@@ -69,13 +69,7 @@ Data being written to firestore must first pass through our server, as no client
     - Unique across all users
 - Passwords
     - Minimum of 8 characters
-    - Maximum of 32 characters
-    - Must contain:
-        - 1 uppercase letter
-        - 1 lowercase letter
-        - 1 number
-        - 1 special character
-    - Must not contain any spaces
+    - Maximum of 64 characters
 - Review Author
     - Must be the username of an existing user
 - Review Content

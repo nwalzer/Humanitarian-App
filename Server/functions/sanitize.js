@@ -10,21 +10,10 @@ function validUsername(uname){
     return !uname.length; 
 }
 
-//Check if password is require length and complexity (8-32 characters, no spaces, and at least: 1 upper case, 1 lower case, 1 number, 1 special character)
+//Check if password is required length
 function validPass(pword){
     pword = pword.toString();
-    let res = pword.length >= 8 && pword.length <= 32;
-
-    res = res && !!pword.match(/[A-Z]/); //at least 1 uppercase
-
-    res = res && !!pword.match(/[a-z]/); //at least 1 lowercase
-
-    res = res && !!pword.match(/[0-9]/); //at least 1 number
-
-    res = res && (pword.replace(/[A-Za-z0-9]/g, "").length > 0); //at least 1 special character
-    
-    res = res && (pword.replace(/\s+/, "").length === pword.length); //no spaces
-    return res;
+    return pword.length >= 8 && pword.length <= 64;
 }
 
 //Check if rating is an integer between 1 and 5
