@@ -16,13 +16,23 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
+import Typography from '@material-ui/core/Typography';
+import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import Divider from '@material-ui/core/Divider';
+
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 const MAPBOX_TOKEN = config.REACT_APP_TOKEN;
 
+const WhiteTextTypography = withStyles({
+  root: {
+    color: "#FFFFFF"
+  }
+})(Typography);
+
 const dialogStyle = {
-  height: '50vh',
+  height: '100vh',
   width: '50vh',
   display: 'flex',
   alignItems: 'center',
@@ -31,7 +41,7 @@ const dialogStyle = {
 }
 
 const listStyle = {
-  height: '80vh',
+  height: '70vh',
   width: '50vh',
   overflowY: 'auto',
   overflowX: 'hidden',
@@ -62,6 +72,9 @@ const listIconStyle = {
   flexWrap: 'wrap',
   justify: 'flex-end'
 }
+
+
+
 
 export default function UserMap() {
 
@@ -98,7 +111,7 @@ export default function UserMap() {
 
       var coordinates = new mapboxgl.LngLat(currentFeature.Lng, currentFeature.Lat);
       var description = '<h3>' + currentFeature.Name + '</h3>' + '<h4>' + currentFeature.Address + '</h4>' + `
-      <button id=${currentFeature.uid} ref=${buttonRef.current}>See More</button>`;
+      <button id=${currentFeature.uid} ref=${buttonRef.current} >See More</button>`;
 
 
       var popup = new mapboxgl.Popup()
@@ -226,13 +239,13 @@ export default function UserMap() {
         map.on('click', 'resources', function (e) {
 
           var clickedPoint = e.features[0];
-          var description = '<h3>' + clickedPoint.properties.Name + '</h3>' + '<h4>' + clickedPoint.properties.Address + '</h4>' + 
+          var description = '<h3>' + clickedPoint.properties.Name + '</h3>' + '<h4>' + clickedPoint.properties.Address + '</h4>' +
             `<button id=${clickedPoint.properties.uid} ref=${buttonRef.current}>See More</button>`;
 
           new mapboxgl.Popup()
-          .setLngLat({lng: clickedPoint.geometry.coordinates[0], lat: clickedPoint.geometry.coordinates[1]})
-          .setHTML(description)
-          .addTo(map);
+            .setLngLat({ lng: clickedPoint.geometry.coordinates[0], lat: clickedPoint.geometry.coordinates[1] })
+            .setHTML(description)
+            .addTo(map);
 
           const handleRes = () => {
             console.log("switching pages");
@@ -241,13 +254,14 @@ export default function UserMap() {
 
           const btn = document.getElementById(clickedPoint.properties.uid);
           btn.addEventListener("click", handleRes);
-          
+
           map.flyTo({
             center: [
               clickedPoint.geometry.coordinates[0],
               clickedPoint.geometry.coordinates[1]
             ],
-            essential: true
+            essential: true,
+            zoom: 12
           });
 
         });
@@ -278,11 +292,18 @@ export default function UserMap() {
 
     return <div>
       <div class='sidebar-user'>
+        <br></br>
+        <WhiteTextTypography variant="body1">
+          Welcome to the LGBT+ resource map! Here, you can view information on LGBT+ resources such as the address, description and rating. You can click on a resource card in the sidebar, or click on a black map marker to view the resource on the map. To learn more about a resource, click on the 'See More' button on the map marker.
+          </WhiteTextTypography>
+          <br></br>
+        <Divider/>
         <List style={listStyle}>
           {listItems}
         </List>
         <SimpleDialog open={open} onClose={handleClose} docInfo={selectedData} />
       </div>
+
       <div className="map-container-user" ref={mapContainer} />
     </div>
   } else {
