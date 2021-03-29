@@ -171,12 +171,10 @@ export default function Login() {
         }
     });
     const handleClickHome = () => {
-        setOpen(false);
         history.push('/');
 
     };
     const handleClickHeat = () => {
-        setOpen(false);
         history.push('/heatmap');
     };
 
