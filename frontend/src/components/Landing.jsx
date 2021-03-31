@@ -23,7 +23,7 @@ export default function LandingPage() {
             <Container maxWidth="md">
                 <Typography variant="h4" gutterBottom>
                     Welcome to the LGBT+ Resource Application Prototype!
-       </Typography>
+            </Typography>
                 <br />
                 <Typography variant="subtitle1" gutterBottom>
                     If you’ve ever felt it was difficult to find LGBT+ safe zones and public resources in your town or city, or if you’re looking to compare

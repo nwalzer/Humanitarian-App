@@ -13,7 +13,7 @@ const WhiteTextTypography = withStyles({
 })(Typography);
 
 
-class ProtectedRoute extends React.Component {
+class Logout extends React.Component {
 
     constructor(props) {
         super(props);
@@ -55,6 +55,11 @@ class ProtectedRoute extends React.Component {
         this.props.history.push("/");
     }
 
+    handleClickProj(e) {
+        this.props.history.push("/aboutus");
+    }
+
+
 
     render() {
         if (this.state != null) {
@@ -65,6 +70,10 @@ class ProtectedRoute extends React.Component {
                     <div>
                         <Button color="primary" onClick={this.handleClickHome.bind(this)}>
                             <WhiteTextTypography noWrap> Home </WhiteTextTypography>
+                        </Button>
+                        <br />
+                        <Button color="primary" onClick={this.handleClickProj.bind(this)}>
+                            <WhiteTextTypography noWrap> About the Project </WhiteTextTypography>
                         </Button>
                         <br />
                         <Button color="primary" onClick={this.handleClickUserMap.bind(this)}>
@@ -96,7 +105,7 @@ class ProtectedRoute extends React.Component {
     }
 }
 
-export default withRouter(ProtectedRoute);
+export default withRouter(Logout);
 
 
 
