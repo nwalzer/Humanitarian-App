@@ -294,9 +294,8 @@ export default function UserMap() {
       <div class='sidebar-user'>
         <br></br>
         <WhiteTextTypography variant="body1">
-          Welcome to the LGBT+ resource map! Here, you can view information on LGBT+ resources such as the address, description and rating. You can click on a resource card in the sidebar, or click on a black map marker to view the resource on the map. To learn more about a resource, click on the 'See More' button on the map marker.
+          Welcome to the LGBT+ resource map! Here, you can view information on LGBT+ resources such as the address, description and rating. You can click on a resource card in the sidebar, or click on a black map marker to view the resource on the map. To learn more about a resource, click on the 'See More' button on the map marker. Use the location icon in the top right corner to visualize what resources are nearby.
           </WhiteTextTypography>
-          <br></br>
         <Divider/>
         <List style={listStyle}>
           {listItems}

@@ -68,7 +68,7 @@ class ProtectedRoute extends React.Component {
                         </Button>
                         <br />
                         <Button color="primary" onClick={this.handleClickUserMap.bind(this)}>
-                            <WhiteTextTypography noWrap> Resources Lookup</WhiteTextTypography>
+                            <WhiteTextTypography noWrap> User Map </WhiteTextTypography>
                         </Button>
                         <br />
                         <Button color="primary" onClick={this.handleClickHeatMap.bind(this)}>
