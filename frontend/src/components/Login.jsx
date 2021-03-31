@@ -174,6 +174,10 @@ export default function Login() {
         history.push('/');
 
     };
+    const handleClickProj = () => {
+        history.push('/aboutus');
+
+    };
     const handleClickHeat = () => {
         history.push('/heatmap');
     };
@@ -186,6 +190,10 @@ export default function Login() {
             <div>
                 <Button color="primary" onClick={handleClickHome}>
                     <WhiteTextTypography noWrap> Home </WhiteTextTypography>
+                </Button>
+                <br />
+                <Button color="primary" onClick={handleClickProj}>
+                    <WhiteTextTypography noWrap> About the Project </WhiteTextTypography>
                 </Button>
                 <br />
                 <Button color="primary" onClick={handleClickHeat}>

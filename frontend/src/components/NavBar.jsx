@@ -22,6 +22,7 @@ import Login from './Login';
 import RegisterAcc from './RegisterAcc';
 import Heatmap from './Heatmap';
 import Logout from './Logout';
+import AboutUs from './AboutUs';
 import {BrowserRouter as Router, Route, Switch, useHistory} from "react-router-dom";
 import UserMap from './UserMap';
 import Review from './Review';
@@ -164,6 +165,7 @@ export default function PersistentDrawerLeft() {
         <Switch>
           <Route exact path="/"><Landing /></Route>
           <Route exact path="/heatmap"><Heatmap /></Route>
+          <Route exact path="/aboutus"><AboutUs /></Route>
           <ProtectedRoute path="/userhome" component={UserMap}/>
           <ProtectedRoute path="/resource/:id" component={ResourcePage}/>
           <ProtectedRoute path="/review/:id" component={Review}/>
