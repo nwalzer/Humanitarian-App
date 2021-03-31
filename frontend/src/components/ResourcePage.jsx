@@ -4,6 +4,9 @@ import { List, ListItem, ListItemText, ListItemIcon, Button } from '@material-ui
 import StarIcon from '@material-ui/icons/Star';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+
+import '../assets/resource.css'
 
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -16,8 +19,8 @@ const WhiteTextTypography = withStyles({
 })(Typography);
 
 const listStyle = {
-  height: '80vh',
-  width: '50vh',
+  height: '85vh',
+  width: '75vh',
   overflowY: 'auto',
   overflowX: 'hidden',
   flexDirection: 'column',
@@ -26,7 +29,7 @@ const listStyle = {
 
 const listItemStyle = {
   backgroundColor: '#c4c4c4',
-  width: '47vh',
+  width: '70vh',
   border: '1px solid #444',
   margin: '5px',
   borderRadius: 25,
@@ -34,7 +37,7 @@ const listItemStyle = {
 }
 
 const listItemTextStyle = {
-  width: '45vh',
+  width: '70vh',
   fontSize: 16,
   color: '#000000'
 }
@@ -93,31 +96,83 @@ export default function ResourcePage(props) {
     }
 
     const listItems = reviewList.map((doc) =>
-    <ListItem style={listItemStyle}>
-      <ListItemText style={listItemTextStyle}
-        primary={doc.uname}
-        secondary={doc.content} />
+      <ListItem style={listItemStyle}>
+        <ListItemText style={listItemTextStyle}
+          primary={"Reviewed by: " + doc.uname}
+          secondary={doc.content} />
 
-      <ListItemIcon style={listIconStyle}>
-        <StarIcon />
-      </ListItemIcon>
-      <ListItemText
-        secondary={doc.rating} />
-    </ListItem>
-  );
+        <ListItemIcon style={listIconStyle}>
+          <StarIcon />
+        </ListItemIcon>
+        <ListItemText
+          secondary={doc.rating} />
+      </ListItem>
+    );
 
-  return (
-    <div>
-      <WhiteTextTypography noWrap>{resourceInfo.Name}</WhiteTextTypography>
-      <WhiteTextTypography noWrap> Address: {resourceInfo.Address}, {resourceInfo.City} </WhiteTextTypography>
-      <WhiteTextTypography noWrap> Email: {resourceInfo.Email}, Phone: {resourceInfo.Phone}, Website: {resourceInfo.Website} </WhiteTextTypography>
-      <WhiteTextTypography> {resourceInfo.Description} </WhiteTextTypography>
-      <Button onClick={handleReview}> <WhiteTextTypography noWrap> Leave a Review </WhiteTextTypography> </Button>
-      <List style={listStyle}>
-        {listItems}
-      </List>
-    </div>
-  );
+    if (loadedReviews) {
+      return (
+        <div>
+          <div class='resource-info-container'>
+            <WhiteTextTypography variant="h4" align="left" >{resourceInfo.Name}</WhiteTextTypography>
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+            <WhiteTextTypography variant="h5" align="left" > <b>Address: </b>{resourceInfo.Address}, {resourceInfo.City} </WhiteTextTypography>
+            <WhiteTextTypography variant="h5" align="left" > <b>Phone: </b> {resourceInfo.Phone} </WhiteTextTypography>
+            <WhiteTextTypography variant="h5" align="left" > <b>Email: </b> {resourceInfo.Email} </WhiteTextTypography>
+            <WhiteTextTypography variant="h5" align="left" > <b>Website: </b> {resourceInfo.Website} </WhiteTextTypography>
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+            <WhiteTextTypography variant="body1" align="left" > {resourceInfo.Description} </WhiteTextTypography>
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+
+            <Button onClick={handleReview}> <WhiteTextTypography variant="h3" noWrap> Leave a Review </WhiteTextTypography> </Button>
+          </div>
+          <div class='review-container'>
+            <WhiteTextTypography variant="h5" align="left" > <b>Reviews:</b> </WhiteTextTypography>
+            <List style={listStyle}>
+              {listItems}
+            </List>
+          </div>
+        </div>
+      );
+
+    }
+    else {
+      return (
+        <div>
+          <div class='resource-info-container'>
+            <WhiteTextTypography variant="h4" align="left" >{resourceInfo.Name}</WhiteTextTypography>
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+            <WhiteTextTypography variant="h5" align="left" > <b>Address: </b>{resourceInfo.Address}, {resourceInfo.City} </WhiteTextTypography>
+            <WhiteTextTypography variant="h5" align="left" > <b>Phone: </b> {resourceInfo.Phone} </WhiteTextTypography>
+            <WhiteTextTypography variant="h5" align="left" > <b>Email: </b> {resourceInfo.Email} </WhiteTextTypography>
+            <WhiteTextTypography variant="h5" align="left" > <b>Website: </b> {resourceInfo.Website} </WhiteTextTypography>
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+            <WhiteTextTypography variant="body1" align="left" > {resourceInfo.Description} </WhiteTextTypography>
+            <br></br>
+            <Divider></Divider>
+            <br></br>
+
+            <Button onClick={handleReview}> <WhiteTextTypography variant="h3" noWrap> Leave a Review </WhiteTextTypography> </Button>
+          </div>
+
+          <div class='review-container'>
+            <WhiteTextTypography variant="h5" align="center" > <b>There are currently no reviews on this resource. </b> </WhiteTextTypography>
+          </div>
+
+        </div>
+      );
+
+    }
+
   }
 
 }
